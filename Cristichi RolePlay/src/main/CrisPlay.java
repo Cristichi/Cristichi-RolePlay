@@ -15,7 +15,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -58,20 +57,10 @@ public class CrisPlay extends JavaPlugin implements Listener {
 	}
 
 	@EventHandler
-	private void onJoin(PlayerJoinEvent e) {
-//		if (isEnabled()) {
-//			if (StatsPlayer.players.containsKey(e.getPlayer().getUniqueId())) {
-//				Stats stats = StatsPlayer.players.get(e.getPlayer().getUniqueId());
-//				e.getPlayer().setDisplayName(stats.getPreffix() + e.getPlayer().getName() + stats.getSuffix());
-//			}
-//		}
-	}
-	
-	@EventHandler
-	private void onChat(AsyncPlayerChatEvent e){
+	private void onChat(AsyncPlayerChatEvent e) {
 		if (StatsPlayer.players.containsKey(e.getPlayer().getUniqueId())) {
 			Stats stats = StatsPlayer.players.get(e.getPlayer().getUniqueId());
-			e.setFormat(stats.getPreffix() + "%s" + stats.getSuffix()+": %s");
+			e.setFormat(stats.getPreffix() + "%s" + stats.getSuffix() + ": %s");
 		}
 	}
 
@@ -94,10 +83,11 @@ public class CrisPlay extends JavaPlugin implements Listener {
 					if (StatsPlayer.players.containsKey(p.getUniqueId())) {
 						double diff = StatsPlayer.millsUntilChoose(p.getUniqueId());
 						if (diff > 0) {
-							p.sendMessage(header+"You need to wait at least "+String.format(Locale.ENGLISH, "%.2f", diff/1000)+" seconds to change your class.");
+							p.sendMessage(header + "You need to wait at least "
+									+ String.format(Locale.ENGLISH, "%.2f", diff / 1000)
+									+ " seconds to change your class.");
 							change = false;
 						}
-						//p.sendMessage(header+"diff = "+diff);
 					}
 					if (change) {
 						boolean wrongClass = true;
@@ -105,14 +95,13 @@ public class CrisPlay extends JavaPlugin implements Listener {
 							if (roleClass.getName().equalsIgnoreCase(args[1])) {
 								StatsPlayer.players.put(p.getUniqueId(), new Stats(roleClass));
 								StatsPlayer.lastChanges.put(p.getUniqueId(), Date.from(Instant.now()));
-								//p.setDisplayName(roleClass.getPreffix() + p.getPlayerListName() + roleClass.getSuffix());
 								wrongClass = false;
-								p.sendMessage(header+"You are now a "+roleClass.getName()+".");
+								p.sendMessage(header + "You are now a " + roleClass.getName() + ".");
 								break;
 							}
 						}
 						if (wrongClass) {
-							p.sendMessage(header+"Class \""+args[1]+"\" does not exist.");	
+							p.sendMessage(header + "Class \"" + args[1] + "\" does not exist.");
 						}
 					}
 				} else {
@@ -142,65 +131,71 @@ public class CrisPlay extends JavaPlugin implements Listener {
 		case "set":
 		case "add":
 			if (sender instanceof Player) {
-				try {
-					if (args.length >= 2) {
-						if (args.length >= 3) {
-							String elegido = args[1].toLowerCase();
-							Player p = (Player) sender;
-							float valorNuevo = Float.parseFloat(args[2]);
-							Stats clase = StatsPlayer.players.getOrDefault(p.getUniqueId(), new Stats());
-							switch (elegido) {
-							case "str":
-							case "dmg":
-							case "damage":
-							case "power":
-							case "strength":
-								clase.setStrength(
-										(int) (valorNuevo + (args[0].equals("add") ? clase.getStrength() : 0)));
-								sender.sendMessage(header + "New Strength: " + accentColor + clase.getStrength());
-								break;
-							case "dex":
-							case "dexterity":
-								clase.setDexterity(
-										(int) (valorNuevo + (args[0].equals("add") ? clase.getDexterity() : 0)));
-								sender.sendMessage(header + "New Dexterity: " + accentColor + clase.getDexterity());
-								break;
-							case "res":
-							case "resist":
-							case "resistance":
-								clase.setResistance(valorNuevo + (args[0].equals("add") ? clase.getResistance() : 0));
-								sender.sendMessage(header + "New Resistance: " + accentColor + clase.getResistance());
-								break;
-							case "blc":
-							case "blo":
-							case "block":
-								clase.setBlock(valorNuevo + (args[0].equals("add") ? clase.getBlock() : 0));
-								sender.sendMessage(header + "New Block: " + accentColor + clase.getBlock());
-								break;
-							case "dod":
-							case "dodge":
-								clase.setDodge(valorNuevo + (args[0].equals("add") ? clase.getDodge() : 0));
-								sender.sendMessage(header + "new Dodge: " + accentColor + clase.getDodge());
-								break;
+				if (sender.hasPermission("crisrp.admin")) {
+					try {
+						if (args.length >= 2) {
+							if (args.length >= 3) {
+								String elegido = args[1].toLowerCase();
+								Player p = (Player) sender;
+								float valorNuevo = Float.parseFloat(args[2]);
+								Stats clase = StatsPlayer.players.getOrDefault(p.getUniqueId(), new Stats());
+								switch (elegido) {
+								case "str":
+								case "dmg":
+								case "damage":
+								case "power":
+								case "strength":
+									clase.setStrength(
+											(int) (valorNuevo + (args[0].equals("add") ? clase.getStrength() : 0)));
+									sender.sendMessage(header + "New Strength: " + accentColor + clase.getStrength());
+									break;
+								case "dex":
+								case "dexterity":
+									clase.setDexterity(
+											(int) (valorNuevo + (args[0].equals("add") ? clase.getDexterity() : 0)));
+									sender.sendMessage(header + "New Dexterity: " + accentColor + clase.getDexterity());
+									break;
+								case "res":
+								case "resist":
+								case "resistance":
+									clase.setResistance(
+											valorNuevo + (args[0].equals("add") ? clase.getResistance() : 0));
+									sender.sendMessage(
+											header + "New Resistance: " + accentColor + clase.getResistance());
+									break;
+								case "blc":
+								case "blo":
+								case "block":
+									clase.setBlock(valorNuevo + (args[0].equals("add") ? clase.getBlock() : 0));
+									sender.sendMessage(header + "New Block: " + accentColor + clase.getBlock());
+									break;
+								case "dod":
+								case "dodge":
+									clase.setDodge(valorNuevo + (args[0].equals("add") ? clase.getDodge() : 0));
+									sender.sendMessage(header + "new Dodge: " + accentColor + clase.getDodge());
+									break;
 
-							default:
-								sender.sendMessage(
-										header + errorColor + "You must specify one of the available stats.");
-								break;
+								default:
+									sender.sendMessage(
+											header + errorColor + "You must specify one of the available stats.");
+									break;
+								}
+								StatsPlayer.players.put(p.getUniqueId(), clase);
+								StatsPlayer.saveAllPlayersStats(ARCHIVO_JUGADORES);
+							} else {
+								sender.sendMessage(header + errorColor + "You must specify how much.");
 							}
-							StatsPlayer.players.put(p.getUniqueId(), clase);
-							StatsPlayer.saveAllPlayersStats(ARCHIVO_JUGADORES);
 						} else {
-							sender.sendMessage(header + errorColor + "You must specify how much.");
+							sender.sendMessage(header + errorColor + "You must specify a stat.");
 						}
-					} else {
-						sender.sendMessage(header + errorColor + "You must specify a stat.");
+					} catch (NumberFormatException e) {
+						sender.sendMessage(header + errorColor + "The quantity must be a number.");
+					} catch (IllegalArgumentException e) {
+						sender.sendMessage(
+								header + errorColor + "That stat must be a number between 0 y 1 (both included).");
 					}
-				} catch (NumberFormatException e) {
-					sender.sendMessage(header + errorColor + "The quantity must be a number.");
-				} catch (IllegalArgumentException e) {
-					sender.sendMessage(
-							header + errorColor + "That stat must be a number between 0 y 1 (both included).");
+				} else {
+					sender.sendMessage(header+"You don't have permission to do that.");
 				}
 			} else
 				sender.sendMessage(header + "Only players can have stats.");
@@ -224,8 +219,10 @@ public class CrisPlay extends JavaPlugin implements Listener {
 			sol.add("help");
 			sol.add("choose");
 			sol.add("stats");
-			sol.add("add");
-			sol.add("set");
+			if (sender.hasPermission("crisrp.admin")) {
+				sol.add("add");
+				sol.add("set");
+			}
 			break;
 
 		case 2:
@@ -259,6 +256,9 @@ public class CrisPlay extends JavaPlugin implements Listener {
 				sol.add("3");
 				sol.add("4");
 				sol.add("5");
+				sol.add("6");
+				sol.add("7");
+				sol.add("8");
 				break;
 
 			case "resistance":
@@ -282,7 +282,6 @@ public class CrisPlay extends JavaPlugin implements Listener {
 			}
 			break;
 		default:
-			// sol = null;
 			break;
 		}
 		return sol;

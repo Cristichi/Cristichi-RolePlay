@@ -7,3 +7,16 @@ commands:
     description: Controls this plugin.
     aliases: [rp, rol, rolep, rplay]
     usage: /rp help
+
+permissions:
+  crisrp.*:
+    description: Gives access to all Cristichi's RolePlay commands
+    children:
+      cristreecapitator.admin: true
+      cristreecapitator.use: true
+  crisrp.admin:
+    description: Allows you to change config values and anyone's stats at will
+    default: op
+  crisrp.use:
+    description: Allows you to have stats
+    default: true
