@@ -1,0 +1,9 @@
+name: RolePlay
+main: main.CrisPlay
+version: 0.115
+api-version: 1.13
+commands:
+  roleplay:
+    description: Controls this plugin.
+    aliases: [rp, rol, rolep, rplay]
+    usage: /rp help
