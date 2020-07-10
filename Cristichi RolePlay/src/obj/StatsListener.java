@@ -14,6 +14,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 
 public class StatsListener implements Listener {
+	private static final String META_ARROW_DAMAGE = "crisrp_arrow_damage";
 
 	private Plugin plugin;
 
@@ -66,8 +67,8 @@ public class StatsListener implements Listener {
 		}
 
 		if (offender instanceof Projectile) {
-			if (offender.hasMetadata("flechaDamage")) {
-				double nuevoDmg = e.getDamage() + offender.getMetadata("flechaDamage").get(0).asInt();
+			if (offender.hasMetadata(META_ARROW_DAMAGE)) {
+				double nuevoDmg = e.getDamage() + offender.getMetadata(META_ARROW_DAMAGE).get(0).asInt();
 				e.setDamage(nuevoDmg > 0 ? nuevoDmg : 0);
 			}
 		}
@@ -81,7 +82,7 @@ public class StatsListener implements Listener {
 			Stats stats = StatsPlayer.players.get(p.getUniqueId());
 			if (stats != null) {
 				Entity proyectil = e.getProjectile();
-				proyectil.setMetadata("flechaDamage", new FixedMetadataValue(plugin, stats.getDexterity()));
+				proyectil.setMetadata(META_ARROW_DAMAGE, new FixedMetadataValue(plugin, stats.getDexterity()));
 			}
 		}
 	}
