@@ -22,75 +22,75 @@ public class StatsListener implements Listener {
 	}
 
 	@EventHandler
-	private void alAtacar(EntityDamageByEntityEvent e) {
-		Entity atacante = e.getDamager();
-		if (atacante instanceof Player) {
-			Player p = (Player) atacante;
-			Stats clase = StatsPlayer.players.get(p.getUniqueId());
-			if (clase != null) {
-				e.setDamage(e.getDamage() + clase.getStrength());
+	private void onEntAttackEnt(EntityDamageByEntityEvent e) {
+		Entity offender = e.getDamager();
+		if (offender instanceof Player) {
+			Player p = (Player) offender;
+			Stats stats = StatsPlayer.players.get(p.getUniqueId());
+			if (stats != null) {
+				e.setDamage(e.getDamage() + stats.getStrength());
 			}
 		}
 
-		Entity atacado = e.getEntity();
-		if (atacado instanceof Player) {
-			Player p = (Player) atacado;
-			Stats clase = StatsPlayer.players.get(p.getUniqueId());
-			if (clase != null) {
-				float porc = 0;
+		Entity defender = e.getEntity();
+		if (defender instanceof Player) {
+			Player p = (Player) defender;
+			Stats stats = StatsPlayer.players.get(p.getUniqueId());
+			if (stats != null) {
+				float chance0dmg = 0;
 				switch (e.getCause()) {
 				case ENTITY_ATTACK:
 				case ENTITY_SWEEP_ATTACK:
 				case BLOCK_EXPLOSION:
 				case ENTITY_EXPLOSION:
-					porc = clase.getBlock();
+					chance0dmg = stats.getBlock();
 					break;
 				case PROJECTILE:
-					porc = clase.getDodge();
+					chance0dmg = stats.getDodge();
 					break;
 
 				default:
 					break;
 				}
-				double nuevo = e.getDamage() * (1 - clase.getResistance());
-				if (Math.random() < porc) {
+				double newDmg = e.getDamage() * (1 - stats.getResistance());
+				if (Math.random() < chance0dmg) {
 					e.setCancelled(true);
 					p.playSound(p.getLocation(), Sound.ITEM_SHIELD_BLOCK, 1, 1);
-					if (atacante instanceof Player) {
-						((Player) atacante).playSound(p.getLocation(), Sound.ITEM_SHIELD_BLOCK, 1, 1);
+					if (offender instanceof Player) {
+						((Player) offender).playSound(p.getLocation(), Sound.ITEM_SHIELD_BLOCK, 1, 1);
 					}
-					nuevo = 0;
+					newDmg = 0;
 				}
-				e.setDamage(nuevo > 0 ? nuevo : 0);
+				e.setDamage(newDmg > 0 ? newDmg : 0);
 			}
 		}
 
-		if (atacante instanceof Projectile) {
-			if (atacante.hasMetadata("flechaDamage")) {
-				double nuevoDmg = e.getDamage() + atacante.getMetadata("flechaDamage").get(0).asInt();
+		if (offender instanceof Projectile) {
+			if (offender.hasMetadata("flechaDamage")) {
+				double nuevoDmg = e.getDamage() + offender.getMetadata("flechaDamage").get(0).asInt();
 				e.setDamage(nuevoDmg > 0 ? nuevoDmg : 0);
 			}
 		}
 	}
 
 	@EventHandler
-	private void alDispararArco(EntityShootBowEvent e) {
-		LivingEntity atacante = e.getEntity();
-		if (atacante instanceof Player) {
-			Player p = (Player) atacante;
-			Stats clase = StatsPlayer.players.get(p.getUniqueId());
-			if (clase != null) {
+	private void onEntShoot(EntityShootBowEvent e) {
+		LivingEntity offender = e.getEntity();
+		if (offender instanceof Player) {
+			Player p = (Player) offender;
+			Stats stats = StatsPlayer.players.get(p.getUniqueId());
+			if (stats != null) {
 				Entity proyectil = e.getProjectile();
-				proyectil.setMetadata("flechaDamage", new FixedMetadataValue(plugin, clase.getDexterity()));
+				proyectil.setMetadata("flechaDamage", new FixedMetadataValue(plugin, stats.getDexterity()));
 			}
 		}
 	}
 
 	@EventHandler
-	private void alRecibirDisparo(ProjectileHitEvent e) {
-		Entity atacado = e.getHitEntity();
-		if (atacado instanceof Player) {
-			Player p = (Player) atacado;
+	private void onEntGetShooted(ProjectileHitEvent e) {
+		Entity defender = e.getHitEntity();
+		if (defender instanceof Player) {
+			Player p = (Player) defender;
 			Stats clase = StatsPlayer.players.get(p.getUniqueId());
 			if (clase != null) {
 				if (Math.random() < clase.getBlock()) {

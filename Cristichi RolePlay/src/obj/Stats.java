@@ -6,7 +6,8 @@ public class Stats {
 	private float strength, dexterity, resistance, block, dodge;
 
 	public Stats() {
-		className = preffix = suffix = "";
+		className  = "(No Class)";
+		preffix = suffix = "";
 		strength = dexterity = resistance = block = dodge = 0;
 	}
 

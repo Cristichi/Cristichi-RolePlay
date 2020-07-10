@@ -2,9 +2,9 @@ package obj;
 
 public enum RoleClass {
 	BEGGAR("Beggar", new Stats(0,0,0,0,0), "[Beggar]"), 
-	WARRIOR("Warrior", new Stats(2, 0, .1f, 0, .1f), "[Warrior]"),
+	WARRIOR("Warrior", new Stats(2, 0, .1f, .1f, 0), "[Warrior]"),
 	TANK("Tank", new Stats(0, 0, .4f, .4f, .4f), "[Tank]"),
-	ARCHER("Archer", new Stats(0, 0, .4f, .4f, .4f), "[Archer]"),
+	ARCHER("Archer", new Stats(0, 2, .1f, 0, .1f), "[Archer]"),
 	;
 	
 	private Stats stats;
