@@ -136,4 +136,20 @@ public class Stats {
 	public float getDodge() {
 		return SortedList.getLevel(levels, exp).getDodge();
 	}
+
+	public int getNextLevelTotalExp() {
+		return SortedList.getExpForNextLevel(levels, exp) + exp;
+	}
+
+	public int getExpForNextLevel() {
+		return SortedList.getExpForNextLevel(levels, exp);
+	}
+
+	@Override
+	public String toString() {
+		return "Stats [className=" + className + ", preffix=" + preffix + ", suffix=" + suffix + ", levels=" + levels
+				+ ", exp=" + exp + "]";
+	}
+	
+	
 }

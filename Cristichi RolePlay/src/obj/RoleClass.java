@@ -11,23 +11,23 @@ public enum RoleClass {
 	static {
 		BEGGAR.addLevels(new Level[] {
 				new Level(0, 0, 0, 0, 0, 0),
+				new Level(100, 0, 0, 0, 0, 0),
 				new Level(200, 0, 0, 0, 0, 0),
-				new Level(400, 0, 0, 0, 0, 0),
 		});
 		WARRIOR.addLevels(new Level[] {
 				new Level(0, 2, 0, .1f, .1f, 0),
-				new Level(200, 4, 0, .1f, .1f, 0),
-				new Level(400, 6, 0, .1f, .1f, 0),
+				new Level(100, 4, 0, .1f, .1f, 0),
+				new Level(200, 6, 0, .1f, .1f, 0),
 		});
 		TANK.addLevels(new Level[] {
 				new Level(0, 0, 0, .4f, .4f, .4f),
-				new Level(200, 0, 0, .5f, .4f, .4f),
-				new Level(400, 0, 0, .6f, .4f, .4f),
+				new Level(100, 0, 0, .5f, .4f, .4f),
+				new Level(200, 0, 0, .6f, .4f, .4f),
 		});
 		ARCHER.addLevels(new Level[] {
 				new Level(0, 0, 2, .1f, 0, .1f),
-				new Level(200, 0, 4, .1f, 0, .1f),
-				new Level(400, 0, 6, .1f, 0, .1f),
+				new Level(100, 0, 4, .1f, 0, .1f),
+				new Level(200, 0, 6, .1f, 0, .1f),
 		});
 		
 	}
