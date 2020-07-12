@@ -35,19 +35,19 @@ public class CrisPlay extends JavaPlugin implements Listener {
 	public final ChatColor errorColor = ChatColor.DARK_RED;
 	public final String header = mainColor + "[" + desc.getName() + "] " + textColor;
 
-	private static final File ARCHIVO_JUGADORES = new File("plugins/Cris RolePlay/Jugadores.yml");
+	private static final File PLAYER_STATS_FILE = new File("plugins/Cris RolePlay/Player Stats.yml");
 
 	@Override
 	public void onEnable() {
 		try {
-			StatsPlayer.loadAllPlayersStats(ARCHIVO_JUGADORES);
+			StatsPlayer.loadAllPlayersStats(PLAYER_STATS_FILE);
 
 			getServer().getPluginManager().registerEvents(new ExpListener(this), this);
 			getServer().getPluginManager().registerEvents(new StatsListener(this), this);
 			getServer().getPluginManager().registerEvents(this, this);
 			getLogger().info("Enabled");
 
-			StatsPlayer.saveAllPlayersStats(ARCHIVO_JUGADORES);
+			StatsPlayer.saveAllPlayersStats(PLAYER_STATS_FILE);
 		} catch (FileSystemException e) {
 			getServer().getPluginManager().disablePlugin(this);
 			throw new RuntimeException(e);
@@ -56,11 +56,11 @@ public class CrisPlay extends JavaPlugin implements Listener {
 
 	@Override
 	public void onDisable() {
-		StatsPlayer.saveAllPlayersStats(ARCHIVO_JUGADORES);
+		StatsPlayer.saveAllPlayersStats(PLAYER_STATS_FILE);
 		getLogger().info("Disabled");
 	}
 	
-	@EventHandler(priority=EventPriority.LOWEST)
+	@EventHandler(priority = EventPriority.LOWEST)
 	private void onLogin(PlayerJoinEvent e) {
 		if (StatsPlayer.players.containsKey(e.getPlayer().getUniqueId())) {
 			e.getPlayer().performCommand("rp stats");
@@ -83,10 +83,13 @@ public class CrisPlay extends JavaPlugin implements Listener {
 		if (args.length == 0) {
 			return false;
 		}
-		boolean bueno = true;
+		boolean correct = true;
 		switch (args[0]) {
 		case "help":
-			sender.sendMessage(header + "Sin ayuda :D");
+			sender.sendMessage(header + "Commands:");
+			sender.sendMessage(accentColor + "  /"+label+" help"+textColor+": " + "Shows this helping message.");
+			sender.sendMessage(accentColor + "  /"+label+" stats"+textColor+": " + "Shows your class, your experience and your stats.");
+			sender.sendMessage(accentColor + "  /"+label+" choose (Class Name)" + textColor+": " + "Changes your roleplay class, but resets your experience.");
 			break;
 		case "choose":
 			if (sender instanceof Player) {
@@ -149,14 +152,14 @@ public class CrisPlay extends JavaPlugin implements Listener {
 					sender.sendMessage(header+"You have to choose a class first. You can use /"+label+" choose (Class Name)");
 				}else {
 					sender.sendMessage(header + "Your stats:");
-					sender.sendMessage(mainColor + " Class"+textColor+": " + accentColor + stats.getClassName());
-					sender.sendMessage(mainColor + " Experience"+textColor+": " + accentColor + stats.getExp()+textColor+"/"+accentColor + stats.getNextLevelTotalExp());
-					sender.sendMessage(mainColor + " Strength"+textColor+": " + accentColor + stats.getStrength());
-					sender.sendMessage(mainColor + " Dexterity"+textColor+": " + accentColor + stats.getDexterity());
+					sender.sendMessage(accentColor + " Class"+textColor+": " + stats.getClassName());
+					sender.sendMessage(accentColor + " Experience"+textColor+": " + stats.getExp()+textColor + accentColor + "/" + textColor + stats.getNextLevelTotalExp());
+					sender.sendMessage(accentColor + " Strength"+textColor+": " + stats.getStrength());
+					sender.sendMessage(accentColor + " Dexterity"+textColor+": " + stats.getDexterity());
 					sender.sendMessage(
-							mainColor + " Resistance"+textColor+": " + accentColor + (int) (stats.getResistance() * 100) + "%");
-					sender.sendMessage(mainColor + " Block"+textColor+": " + accentColor + (int) (stats.getBlock() * 100) + "%");
-					sender.sendMessage(mainColor + " Dodge"+textColor+": " + accentColor + (int) (stats.getDodge() * 100) + "%");
+							accentColor + " Resistance"+textColor+": " + (int) (stats.getResistance() * 100) + accentColor + "%");
+					sender.sendMessage(accentColor + " Block"+textColor+": " + (int) (stats.getBlock() * 100) + accentColor + "%");
+					sender.sendMessage(accentColor + " Dodge"+textColor+": " + (int) (stats.getDodge() * 100) + accentColor + "%");
 				}
 			} else
 				sender.sendMessage(header + "Only players can have stats.");
@@ -236,10 +239,10 @@ public class CrisPlay extends JavaPlugin implements Listener {
 //			break;
 
 		default:
-			bueno = false;
+			correct = false;
 			break;
 		}
-		return bueno;
+		return correct;
 	}
 
 	@Override
