@@ -75,12 +75,27 @@ public class CrisPlay extends JavaPlugin implements Listener {
 		case "help":
 			sender.sendMessage(header + "Sin ayuda :D");
 			break;
+		case "exp":
+			if (sender instanceof Player) {
+				Player p = (Player) sender;
+				Stats stats = StatsPlayer.players.get(p.getUniqueId());
+				if (stats == null) {
+					sender.sendMessage(header+"You have to choose a class first. You can use /"+label+" choose (Class Name)");
+				}else {
+					stats.increaseExp(10);
+					StatsPlayer.players.put(p.getUniqueId(), stats);
+					sender.sendMessage(header + "Hecho:");
+				}
+			} else
+				sender.sendMessage(header + "Only players can have stats.");
+			break;
 		case "choose":
 			if (sender instanceof Player) {
-				if (args.length == 2) {
+				if (args.length >= 2) {
 					Player p = (Player) sender;
 					boolean change = true;
-					if (StatsPlayer.players.containsKey(p.getUniqueId())) {
+					boolean hadClass = StatsPlayer.players.containsKey(p.getUniqueId()); 
+					if (hadClass) {
 						double diff = StatsPlayer.millsUntilChoose(p.getUniqueId());
 						if (diff > 0) {
 							p.sendMessage(header + "You need to wait at least "
@@ -93,6 +108,21 @@ public class CrisPlay extends JavaPlugin implements Listener {
 						boolean wrongClass = true;
 						for (RoleClass roleClass : RoleClass.values()) {
 							if (roleClass.getName().equalsIgnoreCase(args[1])) {
+								wrongClass = false;
+								if (hadClass) {
+									Stats rc = StatsPlayer.players.get(p.getUniqueId());
+									if (rc.getClassName().equals(roleClass.getName())) {
+										sender.sendMessage(header+"Your class is already "+rc.getClassName()+".");
+										break;
+									}
+									if (rc.getExp()>0) {
+										if (args.length<3 || !args[2].equals("confirm")) {
+											sender.sendMessage(header+"You will lose your current experience ("+rc.getExp()+"), type \"/"+label+" "+args[0]+" "+args[1]+" confirm\" to change your class.");
+											break;
+										}
+									}
+								}
+								
 								StatsPlayer.players.put(p.getUniqueId(), new Stats(roleClass));
 								StatsPlayer.lastChanges.put(p.getUniqueId(), Date.from(Instant.now()));
 								wrongClass = false;
@@ -106,7 +136,7 @@ public class CrisPlay extends JavaPlugin implements Listener {
 					}
 				} else {
 					sender.sendMessage(
-							header + "You have to change your class using: /" + label + " choose (Class Name)");
+							header + "You may change your class using: /" + label + " choose (Class Name)");
 				}
 			} else {
 				sender.sendMessage(header + "Only players can have stats.");
@@ -115,91 +145,96 @@ public class CrisPlay extends JavaPlugin implements Listener {
 		case "stats":
 			if (sender instanceof Player) {
 				Player p = (Player) sender;
-				Stats stats = StatsPlayer.players.getOrDefault(p.getUniqueId(), new Stats());
-				sender.sendMessage(header + "Your stats:");
-				sender.sendMessage(mainColor + " Class: " + accentColor + stats.getClassName());
-				sender.sendMessage(mainColor + " Strength: " + accentColor + stats.getStrength());
-				sender.sendMessage(mainColor + " Dexterity: " + accentColor + stats.getDexterity());
-				sender.sendMessage(
-						mainColor + " Resistance: " + accentColor + (int) (stats.getResistance() * 100) + "%");
-				sender.sendMessage(mainColor + " Block: " + accentColor + (int) (stats.getBlock() * 100) + "%");
-				sender.sendMessage(mainColor + " Dodge: " + accentColor + (int) (stats.getDodge() * 100) + "%");
-			} else
-				sender.sendMessage(header + "Only players can have stats.");
-			break;
-
-		case "set":
-		case "add":
-			if (sender instanceof Player) {
-				if (sender.hasPermission("crisrp.admin")) {
-					try {
-						if (args.length >= 2) {
-							if (args.length >= 3) {
-								String elegido = args[1].toLowerCase();
-								Player p = (Player) sender;
-								float valorNuevo = Float.parseFloat(args[2]);
-								Stats clase = StatsPlayer.players.getOrDefault(p.getUniqueId(), new Stats());
-								switch (elegido) {
-								case "str":
-								case "dmg":
-								case "damage":
-								case "power":
-								case "strength":
-									clase.setStrength(
-											(int) (valorNuevo + (args[0].equals("add") ? clase.getStrength() : 0)));
-									sender.sendMessage(header + "New Strength: " + accentColor + clase.getStrength());
-									break;
-								case "dex":
-								case "dexterity":
-									clase.setDexterity(
-											(int) (valorNuevo + (args[0].equals("add") ? clase.getDexterity() : 0)));
-									sender.sendMessage(header + "New Dexterity: " + accentColor + clase.getDexterity());
-									break;
-								case "res":
-								case "resist":
-								case "resistance":
-									clase.setResistance(
-											valorNuevo + (args[0].equals("add") ? clase.getResistance() : 0));
-									sender.sendMessage(
-											header + "New Resistance: " + accentColor + clase.getResistance());
-									break;
-								case "blc":
-								case "blo":
-								case "block":
-									clase.setBlock(valorNuevo + (args[0].equals("add") ? clase.getBlock() : 0));
-									sender.sendMessage(header + "New Block: " + accentColor + clase.getBlock());
-									break;
-								case "dod":
-								case "dodge":
-									clase.setDodge(valorNuevo + (args[0].equals("add") ? clase.getDodge() : 0));
-									sender.sendMessage(header + "new Dodge: " + accentColor + clase.getDodge());
-									break;
-
-								default:
-									sender.sendMessage(
-											header + errorColor + "You must specify one of the available stats.");
-									break;
-								}
-								StatsPlayer.players.put(p.getUniqueId(), clase);
-								StatsPlayer.saveAllPlayersStats(ARCHIVO_JUGADORES);
-							} else {
-								sender.sendMessage(header + errorColor + "You must specify how much.");
-							}
-						} else {
-							sender.sendMessage(header + errorColor + "You must specify a stat.");
-						}
-					} catch (NumberFormatException e) {
-						sender.sendMessage(header + errorColor + "The quantity must be a number.");
-					} catch (IllegalArgumentException e) {
-						sender.sendMessage(
-								header + errorColor + "That stat must be a number between 0 y 1 (both included).");
-					}
-				} else {
-					sender.sendMessage(header+"You don't have permission to do that.");
+				Stats stats = StatsPlayer.players.get(p.getUniqueId());
+				if (stats == null) {
+					sender.sendMessage(header+"You have to choose a class first. You can use /"+label+" choose (Class Name)");
+				}else {
+					sender.sendMessage(header + "Your stats:");
+					sender.sendMessage(mainColor + " Class: " + accentColor + stats.getClassName());
+					sender.sendMessage(mainColor + " Experience: " + accentColor + stats.getExp());
+					sender.sendMessage(mainColor + " Strength: " + accentColor + stats.getStrength());
+					sender.sendMessage(mainColor + " Dexterity: " + accentColor + stats.getDexterity());
+					sender.sendMessage(
+							mainColor + " Resistance: " + accentColor + (int) (stats.getResistance() * 100) + "%");
+					sender.sendMessage(mainColor + " Block: " + accentColor + (int) (stats.getBlock() * 100) + "%");
+					sender.sendMessage(mainColor + " Dodge: " + accentColor + (int) (stats.getDodge() * 100) + "%");
 				}
 			} else
 				sender.sendMessage(header + "Only players can have stats.");
 			break;
+
+//		case "set":
+//		case "add":
+//			if (sender instanceof Player) {
+//				if (sender.hasPermission("crisrp.admin")) {
+//					try {
+//						if (args.length >= 2) {
+//							if (args.length >= 3) {
+//								String elegido = args[1].toLowerCase();
+//								Player p = (Player) sender;
+//								float valorNuevo = Float.parseFloat(args[2]);
+//								Stats clase = StatsPlayer.players.getOrDefault(p.getUniqueId(), new Stats());
+//								switch (elegido) {
+//								case "str":
+//								case "dmg":
+//								case "damage":
+//								case "power":
+//								case "strength":
+//									clase.setStrength(
+//											(int) (valorNuevo + (args[0].equals("add") ? clase.getStrength() : 0)));
+//									sender.sendMessage(header + "New Strength: " + accentColor + clase.getStrength());
+//									break;
+//								case "dex":
+//								case "dexterity":
+//									clase.setDexterity(
+//											(int) (valorNuevo + (args[0].equals("add") ? clase.getDexterity() : 0)));
+//									sender.sendMessage(header + "New Dexterity: " + accentColor + clase.getDexterity());
+//									break;
+//								case "res":
+//								case "resist":
+//								case "resistance":
+//									clase.setResistance(
+//											valorNuevo + (args[0].equals("add") ? clase.getResistance() : 0));
+//									sender.sendMessage(
+//											header + "New Resistance: " + accentColor + clase.getResistance());
+//									break;
+//								case "blc":
+//								case "blo":
+//								case "block":
+//									clase.setBlock(valorNuevo + (args[0].equals("add") ? clase.getBlock() : 0));
+//									sender.sendMessage(header + "New Block: " + accentColor + clase.getBlock());
+//									break;
+//								case "dod":
+//								case "dodge":
+//									clase.setDodge(valorNuevo + (args[0].equals("add") ? clase.getDodge() : 0));
+//									sender.sendMessage(header + "new Dodge: " + accentColor + clase.getDodge());
+//									break;
+//
+//								default:
+//									sender.sendMessage(
+//											header + errorColor + "You must specify one of the available stats.");
+//									break;
+//								}
+//								StatsPlayer.players.put(p.getUniqueId(), clase);
+//								StatsPlayer.saveAllPlayersStats(ARCHIVO_JUGADORES);
+//							} else {
+//								sender.sendMessage(header + errorColor + "You must specify how much.");
+//							}
+//						} else {
+//							sender.sendMessage(header + errorColor + "You must specify a stat.");
+//						}
+//					} catch (NumberFormatException e) {
+//						sender.sendMessage(header + errorColor + "The quantity must be a number.");
+//					} catch (IllegalArgumentException e) {
+//						sender.sendMessage(
+//								header + errorColor + "That stat must be a number between 0 y 1 (both included).");
+//					}
+//				} else {
+//					sender.sendMessage(header+"You don't have permission to do that.");
+//				}
+//			} else
+//				sender.sendMessage(header + "Only players can have stats.");
+//			break;
 
 		default:
 			bueno = false;
@@ -219,10 +254,10 @@ public class CrisPlay extends JavaPlugin implements Listener {
 			sol.add("help");
 			sol.add("choose");
 			sol.add("stats");
-			if (sender.hasPermission("crisrp.admin")) {
-				sol.add("add");
-				sol.add("set");
-			}
+//			if (sender.hasPermission("crisrp.admin")) {
+//				sol.add("add");
+//				sol.add("set");
+//			}
 			break;
 
 		case 2:

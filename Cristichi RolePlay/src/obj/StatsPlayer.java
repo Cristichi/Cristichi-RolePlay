@@ -56,13 +56,14 @@ public class StatsPlayer {
 				Stats value = players.get(key);
 				fileText += key.toString() + " ("+Bukkit.getOfflinePlayer(key).getName()+"): [";
 				fileText += "\n  Class name: " + value.getClassName();
-				fileText += "\n  Class preffix: " + value.getPreffix();
-				fileText += "\n  Class suffix: " + value.getSuffix();
-				fileText += "\n  Strength: " + value.getStrength();
-				fileText += "\n  Dexirity: " + value.getDexterity();
-				fileText += "\n  Resistance: " + value.getResistance();
-				fileText += "\n  Block: " + value.getBlock();
-				fileText += "\n  Dodge: " + value.getDodge();
+				fileText += "\n  Experience: " + value.getExp();
+//				fileText += "\n  Class preffix: " + value.getPreffix();
+//				fileText += "\n  Class suffix: " + value.getSuffix();
+//				fileText += "\n  Strength: " + value.getStrength();
+//				fileText += "\n  Dexirity: " + value.getDexterity();
+//				fileText += "\n  Resistance: " + value.getResistance();
+//				fileText += "\n  Block: " + value.getBlock();
+//				fileText += "\n  Dodge: " + value.getDodge();
 				fileText += "\n]\n";
 			}
 
@@ -84,6 +85,12 @@ public class StatsPlayer {
 			FileReader fr = new FileReader(file);
 			BufferedReader br = new BufferedReader(fr);
 
+			/*
+				736ff9cb-e917-47cd-8038-0b77edf37935 (CristichiEX): [
+				  Class name: Archer
+				  Experience: 0
+				]
+			 */
 			while ((line = br.readLine()) != null) {
 				lineCont++;
 				if (!line.startsWith("#") && !line.isEmpty()) {
@@ -91,40 +98,50 @@ public class StatsPlayer {
 						StringTokenizer st = new StringTokenizer(line, "(");
 						UUID uuid = UUID.fromString(st.nextToken().trim());
 
-						Stats stats = new Stats();
-						for(int i=0; i<5; i++){
+						Stats stats = null;
+						for(int i=0; i<2; i++){
 							lineCont++;
-							line = br.readLine();
-							st = new StringTokenizer(line, ":");
-							String dataName = st.nextToken().trim().toLowerCase();
+							line = br.readLine().trim();
+							
+							StringTokenizer lineST = new StringTokenizer(line, ":");
+							String dataName = lineST.nextToken().trim().toLowerCase();
+							String data = lineST.nextToken().trim();
 							switch (dataName) {
 							case "class name":
-								stats.setClassName(st.nextToken());
+								for (RoleClass rc : RoleClass.values()) {
+									if (rc.getName().equalsIgnoreCase(data)) {
+										stats = new Stats(rc);
+									}
+								}
 								break;
-							case "class preffix":
-								stats.setPreffix(st.nextToken());
+							case "exp":
+							case "experience":
+								stats.setExp(Integer.parseInt(data));
 								break;
-							case "class suffix":
-								stats.setSuffix(st.nextToken());
-								break;
-							case "strength":
-								stats.setStrength(Float.parseFloat(st.nextToken().trim()));
-								break;
-							case "dexirity":
-								stats.setDexterity(Float.parseFloat(st.nextToken().trim()));
-								break;
-							case "resistance":
-								stats.setResistance(Float.parseFloat(st.nextToken().trim()));
-								break;
-							case "block":
-								stats.setBlock(Float.parseFloat(st.nextToken().trim()));
-								break;
-							case "dodge":
-								stats.setDodge(Float.parseFloat(st.nextToken().trim()));
-								break;
+//							case "class preffix":
+//								stats.setPreffix(st.nextToken());
+//								break;
+//							case "class suffix":
+//								stats.setSuffix(st.nextToken());
+//								break;
+//							case "strength":
+//								stats.setStrength(Float.parseFloat(st.nextToken().trim()));
+//								break;
+//							case "dexirity":
+//								stats.setDexterity(Float.parseFloat(st.nextToken().trim()));
+//								break;
+//							case "resistance":
+//								stats.setResistance(Float.parseFloat(st.nextToken().trim()));
+//								break;
+//							case "block":
+//								stats.setBlock(Float.parseFloat(st.nextToken().trim()));
+//								break;
+//							case "dodge":
+//								stats.setDodge(Float.parseFloat(st.nextToken().trim()));
+//								break;
 
 							default:
-								throw new NullPointerException();
+								throw new NullPointerException("stat \""+dataName+"\" not recognized");
 							}
 						}
 						players.put(uuid, stats);
@@ -133,7 +150,8 @@ public class StatsPlayer {
 			}
 			br.close();
 		} catch (Exception e) {
-			throw new FileSystemException(file.getName()+" could not be parsed"+(lineCont>0?" (line "+lineCont+": "+line+")":""));
+			e.printStackTrace();
+			throw new FileSystemException(file.getName()+" could not be parsed"+(lineCont>0?" (line "+lineCont+": \""+line+"\")":""));
 		}
 	}
 }

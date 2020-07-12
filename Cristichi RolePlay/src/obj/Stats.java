@@ -1,14 +1,18 @@
 package obj;
 
+import util.SortedList;
+
 public class Stats {
 
 	private String className, preffix, suffix;
-	private float strength, dexterity, resistance, block, dodge;
+	private SortedList<Level> levels;
+	private int exp;
 
 	public Stats() {
 		className  = "(No Class)";
 		preffix = suffix = "";
-		strength = dexterity = resistance = block = dodge = 0;
+		levels = new SortedList<>(new Level.LevelComparator());
+		exp = 0;
 	}
 
 	/**
@@ -22,16 +26,12 @@ public class Stats {
 	 * @param block
 	 * @param dodge
 	 */
-	public Stats(String className, String preffix, String suffix, float strength, float dexterity, float resistance,
-			float block, float dodge) {
+	public Stats(String className, String preffix, String suffix, SortedList<Level> levels) {
 		this.className = className;
 		this.preffix = preffix;
 		this.suffix = suffix;
-		this.strength = strength;
-		this.dexterity = dexterity;
-		this.resistance = resistance;
-		this.block = block;
-		this.dodge = dodge;
+		this.levels = levels;
+		exp = 0;
 	}
 
 	/**
@@ -43,15 +43,12 @@ public class Stats {
 	 * @param block      % chance to reduce a physical attack's damage to 0
 	 * @param            dodge% chance to reduce a arrow's damage to 0
 	 */
-	public Stats(RoleClass base, float strength, float dexterity, float resistance, float block, float dodge) {
+	public Stats(RoleClass base, SortedList<Level> levels) {
 		className = base.getName();
 		preffix = base.getPrefix();
 		suffix = base.getSuffix();
-		this.strength = strength;
-		this.dexterity = dexterity;
-		this.resistance = resistance;
-		this.block = block;
-		this.dodge = dodge;
+		this.levels = levels;
+		exp = 0;
 	}
 
 	/**
@@ -62,27 +59,26 @@ public class Stats {
 	 * @param block      % chance to reduce a physical attack's damage to 0
 	 * @param            dodge% chance to reduce a arrow's damage to 0
 	 */
-	public Stats(float strength, float dexterity, float resistance, float block, float dodge) {
-		this.strength = strength;
-		this.dexterity = dexterity;
-		this.resistance = resistance;
-		this.block = block;
-		this.dodge = dodge;
+	public Stats(SortedList<Level> levels) {
+		this.levels = levels;
+		exp = 0;
 	}
 
 	public Stats(Stats copy) {
-		this.strength = copy.strength;
-		this.dexterity = copy.dexterity;
-		this.resistance = copy.resistance;
-		this.block = copy.block;
-		this.dodge = copy.dodge;
+		className = copy.className;
+		preffix = copy.preffix;
+		suffix = copy.suffix;
+		levels = copy.levels;
+		exp = copy.exp;
 	}
 
 	public Stats(RoleClass base) {
-		this(base.getStats());
+		this(base.getLevels());
 		className = base.getName();
 		preffix = base.getPrefix();
 		suffix = base.getSuffix();
+		levels = base.getLevels();
+		exp = 0;
 	}
 
 	public String getClassName() {
@@ -108,60 +104,36 @@ public class Stats {
 	public void setSuffix(String suffix) {
 		this.suffix = suffix;
 	}
-
-	public double getStrength() {
-		return strength;
+	
+	public int getExp() {
+		return exp;
+	}
+	
+	public void setExp(int exp) {
+		this.exp = exp;
 	}
 
-	public void setStrength(float strength) {
-		this.strength = strength;
+	public void increaseExp(int increase) {
+		exp+=increase;
+	}
+
+	public double getStrength() {
+		return SortedList.getLevel(levels, exp).getStrength();
 	}
 
 	public double getDexterity() {
-		return dexterity;
-	}
-
-	public void setDexterity(float dexerity) {
-		this.dexterity = dexerity;
+		return SortedList.getLevel(levels, exp).getDexterity();
 	}
 
 	public float getResistance() {
-		return resistance;
-	}
-
-	/**
-	 * @param resistance Must be a number bewteen 0 and 1, both inclusives
-	 */
-	public void setResistance(float resistance) {
-		if (resistance < 0 || resistance > 1)
-			throw new IllegalArgumentException();
-		this.resistance = resistance;
+		return SortedList.getLevel(levels, exp).getResistance();
 	}
 
 	public float getBlock() {
-		return block;
-	}
-
-	/**
-	 * @param block Must be a number bewteen 0 and 1, both inclusives
-	 */
-	public void setBlock(float block) {
-		if (block < 0 || block > 1)
-			throw new IllegalArgumentException();
-		this.block = block;
+		return SortedList.getLevel(levels, exp).getBlock();
 	}
 
 	public float getDodge() {
-		return dodge;
-	}
-
-	/**
-	 * 
-	 * @param dodge Must be a number bewteen 0 and 1, both inclusives
-	 */
-	public void setDodge(float dodge) {
-		if (dodge < 0 || dodge > 1)
-			throw new IllegalArgumentException();
-		this.dodge = dodge;
+		return SortedList.getLevel(levels, exp).getDodge();
 	}
 }

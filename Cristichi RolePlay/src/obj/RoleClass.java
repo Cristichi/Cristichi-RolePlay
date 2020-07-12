@@ -1,37 +1,103 @@
 package obj;
 
+import util.SortedList;
+
 public enum RoleClass {
-	BEGGAR("Beggar", new Stats(0,0,0,0,0), "[Beggar]"), 
-	WARRIOR("Warrior", new Stats(2, 0, .1f, .1f, 0), "[Warrior]"),
-	TANK("Tank", new Stats(0, 0, .4f, .4f, .4f), "[Tank]"),
-	ARCHER("Archer", new Stats(0, 2, .1f, 0, .1f), "[Archer]"),
+	BEGGAR("Beggar", "[Beggar]"),
+	WARRIOR("Warrior", "[Warrior]"),
+	TANK("Tank", "[Tank]"),
+	ARCHER("Archer", "[Archer]"),
 	;
-	
-	private Stats stats;
+	static {
+		BEGGAR.addLevels(new Level[] {
+				new Level(0, 0, 0, 0, 0, 0),
+				new Level(200, 0, 0, 0, 0, 0),
+				new Level(400, 0, 0, 0, 0, 0),
+		});
+		WARRIOR.addLevels(new Level[] {
+				new Level(0, 2, 0, .1f, .1f, 0),
+				new Level(200, 4, 0, .1f, .1f, 0),
+				new Level(400, 6, 0, .1f, .1f, 0),
+		});
+		TANK.addLevels(new Level[] {
+				new Level(0, 0, 0, .4f, .4f, .4f),
+				new Level(200, 0, 0, .5f, .4f, .4f),
+				new Level(400, 0, 0, .6f, .4f, .4f),
+		});
+		ARCHER.addLevels(new Level[] {
+				new Level(0, 0, 2, .1f, 0, .1f),
+				new Level(200, 0, 4, .1f, 0, .1f),
+				new Level(400, 0, 6, .1f, 0, .1f),
+		});
+		
+	}
+
+	private SortedList<Level> levels;
 	private String name, prefix, suffix;
-	
-	private RoleClass(String name, Stats stats) {
+
+	private RoleClass(String name) {
 		this.name = name;
-		this.stats = stats;
+		levels = new SortedList<>(new Level.LevelComparator());
 		prefix = suffix = "";
 	}
-	
-	private RoleClass(String name, Stats stats, String prefix) {
+
+	private RoleClass(String name, String prefix) {
 		this.name = name;
-		this.stats = stats;
+		levels = new SortedList<>(new Level.LevelComparator());
 		this.prefix = prefix.trim();
 		suffix = "";
 	}
-	
-	private RoleClass(String name, Stats stats, String prefix, String suffix) {
+
+
+	private RoleClass(String name, String prefix, String suffix) {
 		this.name = name;
-		this.stats = stats;
+		levels = new SortedList<>(new Level.LevelComparator());
 		this.prefix = prefix.trim();
 		this.suffix = suffix.trim();
 	}
 
-	public Stats getStats() {
-		return stats;
+
+	private RoleClass(String name, float strength, float dexterity, float resistance, float block, float dodge) {
+		this.name = name;
+		levels = new SortedList<>(new Level.LevelComparator());
+		this.levels.add(new Level(0, strength, dexterity, resistance, block, dodge));
+		prefix = suffix = "";
+	}
+
+	private RoleClass(String name, String prefix, float strength, float dexterity, float resistance, float block,
+			float dodge) {
+		this.name = name;
+		levels = new SortedList<>(new Level.LevelComparator());
+		this.levels.add(new Level(0, strength, dexterity, resistance, block, dodge));
+		this.prefix = prefix.trim();
+		suffix = "";
+	}
+
+	private RoleClass(String name, String prefix, String suffix, float strength, float dexterity, float resistance,
+			float block, float dodge) {
+		this.name = name;
+		levels = new SortedList<>(new Level.LevelComparator());
+		this.levels.add(new Level(0, strength, dexterity, resistance, block, dodge));
+		this.prefix = prefix.trim();
+		this.suffix = suffix.trim();
+	}
+	
+	public void addLevel(Level lvl) {
+		levels.add(lvl);
+	}
+	
+	public void addLevels(Level[] lvls) {
+		for (Level level : lvls) {
+			addLevel(level);
+		}
+	}
+	
+	public SortedList<Level> getLevels() {
+		return levels;
+	}
+	
+	public void setLevels(SortedList<Level> levels) {
+		this.levels = levels;
 	}
 
 	public String getName() {
