@@ -21,10 +21,12 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import obj.ExpListener;
+import obj.Level;
 import obj.RoleClass;
 import obj.Stats;
 import obj.StatsListener;
 import obj.StatsPlayer;
+import util.SortedList;
 
 public class CrisPlay extends JavaPlugin implements Listener {
 	private PluginDescriptionFile desc = getDescription();
@@ -88,14 +90,60 @@ public class CrisPlay extends JavaPlugin implements Listener {
 		case "help":
 			sender.sendMessage(header + "Commands:");
 			sender.sendMessage(accentColor + "  /"+label+" help"+textColor+": " + "Shows this helping message.");
-			sender.sendMessage(accentColor + "  /"+label+" classes"+textColor+": " + "Lists all classes and a short description for each one of them.");
 			sender.sendMessage(accentColor + "  /"+label+" stats"+textColor+": " + "Shows your class, your experience and your stats.");
+			sender.sendMessage(accentColor + "  /"+label+" classes"+textColor+": " + "Lists all classes and a short description for each one of them.");
+			sender.sendMessage(accentColor + "  /"+label+" info (Class Name)" + textColor+": " + "Shows you information about the different levels and how to gain experience if that class.");
 			sender.sendMessage(accentColor + "  /"+label+" choose (Class Name)" + textColor+": " + "Changes your roleplay class, but resets your experience.");
 			break;
 		case "classes":
 			sender.sendMessage(header + "Classes:");
 			for (RoleClass rc : RoleClass.values()) {
 				sender.sendMessage(accentColor + "  "+rc.getName()+textColor+": " + rc.getDesc());
+			}
+			break;
+		case "info":
+			if (sender instanceof Player) {
+				Player p = (Player) sender;
+				RoleClass rc = null;
+				if (args.length >= 2) {
+					for (RoleClass roleClass : RoleClass.values()) {
+						if (roleClass.getName().equalsIgnoreCase(args[1])) {
+							rc = roleClass;
+							break;
+						}
+					}
+				} else if (args.length == 1 && StatsPlayer.players.containsKey(p.getUniqueId())){
+					String playerClass = StatsPlayer.players.get(p.getUniqueId()).getClassName();
+					for (RoleClass roleClass : RoleClass.values()) {
+						if (roleClass.getName().equalsIgnoreCase(playerClass)) {
+							rc = roleClass;
+							break;
+						}
+					}
+				}
+				if (rc != null) {
+					sender.sendMessage(new String [] {
+							header + rc.getName()+":",
+							textColor + " "+rc.getInfo()
+					});
+					SortedList<Level> lvls = rc.getLevels();
+					for (int i = 0; i < lvls.size(); i++) {
+						Level lvl = lvls.get(i);
+						sender.sendMessage(new String[] {
+							textColor + "  Level " + accentColor + (i+1) + textColor + ": ",
+							textColor + "   Required Exp: "  + accentColor + lvl.getRequiredExp() + "" +
+							textColor + "   Strength: " + accentColor + lvl.getStrength() + "" +
+							textColor + "    Dexterity: " + accentColor + lvl.getDexterity(),
+							textColor + "   Resistance: " + accentColor + lvl.getResistance() + "" +
+							textColor + "      Block: " + accentColor + lvl.getBlock() + "" +
+							textColor + "      Dodge: " + accentColor + lvl.getBlock()
+						});
+					}
+				} else {
+					sender.sendMessage(header + "You must specify which class if you don't have any.");
+				}
+			} else {
+				sender.sendMessage(header + "Only players can have stats.");
 			}
 			break;
 		case "choose":
@@ -261,6 +309,7 @@ public class CrisPlay extends JavaPlugin implements Listener {
 		switch (args.length) {
 		case 1:
 			sol.add("help");
+			sol.add("info");
 			sol.add("classes");
 			sol.add("choose");
 			sol.add("stats");
@@ -273,18 +322,19 @@ public class CrisPlay extends JavaPlugin implements Listener {
 		case 2:
 			switch (args[0]) {
 			case "choose":
+			case "info":
 				for (RoleClass roleClass : RoleClass.values()) {
 					sol.add(roleClass.getName());
 				}
 				break;
-			case "add":
-			case "set":
-				sol.add("strength");
-				sol.add("dexterity");
-				sol.add("resistance");
-				sol.add("block");
-				sol.add("dodge");
-				break;
+//			case "add":
+//			case "set":
+//				sol.add("strength");
+//				sol.add("dexterity");
+//				sol.add("resistance");
+//				sol.add("block");
+//				sol.add("dodge");
+//				break;
 
 			default:
 				break;

@@ -64,12 +64,6 @@ public class Level implements Comparable<Level> {
 	}
 
 	@Override
-	public String toString() {
-		return "Level [requiredExp=" + requiredExp + ", strength=" + strength + ", dexterity=" + dexterity
-				+ ", resistance=" + resistance + ", block=" + block + ", dodge=" + dodge + "]";
-	}
-
-	@Override
 	public int compareTo(Level o) {
 		return requiredExp > o.requiredExp ? 1 : requiredExp < o.requiredExp ? -1 : 0;
 	}
