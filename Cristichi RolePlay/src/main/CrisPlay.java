@@ -29,10 +29,10 @@ import obj.StatsPlayer;
 public class CrisPlay extends JavaPlugin implements Listener {
 	private PluginDescriptionFile desc = getDescription();
 
-	public final ChatColor mainColor = ChatColor.BLUE;
-	public final ChatColor textColor = ChatColor.AQUA;
-	public final ChatColor accentColor = ChatColor.GOLD;
-	public final ChatColor errorColor = ChatColor.DARK_RED;
+	public static final ChatColor mainColor = ChatColor.LIGHT_PURPLE;
+	public static final ChatColor textColor = ChatColor.AQUA;
+	public static final ChatColor accentColor = ChatColor.GOLD;
+	public static final ChatColor errorColor = ChatColor.DARK_RED;
 	public final String header = mainColor + "[" + desc.getName() + "] " + textColor;
 
 	private static final File PLAYER_STATS_FILE = new File("plugins/Cris RolePlay/Player Stats.yml");
@@ -88,8 +88,15 @@ public class CrisPlay extends JavaPlugin implements Listener {
 		case "help":
 			sender.sendMessage(header + "Commands:");
 			sender.sendMessage(accentColor + "  /"+label+" help"+textColor+": " + "Shows this helping message.");
+			sender.sendMessage(accentColor + "  /"+label+" classes"+textColor+": " + "Lists all classes and a short description for each one of them.");
 			sender.sendMessage(accentColor + "  /"+label+" stats"+textColor+": " + "Shows your class, your experience and your stats.");
 			sender.sendMessage(accentColor + "  /"+label+" choose (Class Name)" + textColor+": " + "Changes your roleplay class, but resets your experience.");
+			break;
+		case "classes":
+			sender.sendMessage(header + "Classes:");
+			for (RoleClass rc : RoleClass.values()) {
+				sender.sendMessage(accentColor + "  "+rc.getName()+textColor+": " + rc.getDesc());
+			}
 			break;
 		case "choose":
 			if (sender instanceof Player) {
@@ -254,6 +261,7 @@ public class CrisPlay extends JavaPlugin implements Listener {
 		switch (args.length) {
 		case 1:
 			sol.add("help");
+			sol.add("classes");
 			sol.add("choose");
 			sol.add("stats");
 //			if (sender.hasPermission("crisrp.admin")) {

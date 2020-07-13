@@ -1,12 +1,14 @@
 package obj;
 
+import main.CrisPlay;
 import util.SortedList;
+import org.bukkit.ChatColor;
 
 public enum RoleClass {
-	BEGGAR("Beggar", "[Beggar]"),
-	WARRIOR("Warrior", "[Warrior]"),
-	TANK("Tank", "[Tank]"),
-	ARCHER("Archer", "[Archer]"),
+	BEGGAR("Beggar", "You aren't much at the start but you will level up easier", CrisPlay.mainColor + "[Beggar]" + ChatColor.RESET),
+	WARRIOR("Warrior", "Hitting things is your way to go.", CrisPlay.mainColor + "[Warrior]" + ChatColor.RESET),
+	TANK("Tank", "You will die fighting or fight without dying at all.", CrisPlay.mainColor + "[Tank]" + ChatColor.RESET),
+	ARCHER("Archer", "I hope you have a bow in your pocket, or tons of snowballs.", CrisPlay.mainColor + "[Archer]" + ChatColor.RESET),
 	;
 	static {
 		BEGGAR.addLevels(new Level[] {
@@ -20,8 +22,8 @@ public enum RoleClass {
 				new Level(200, 6, 0, .1f, .1f, 0),
 		});
 		TANK.addLevels(new Level[] {
-				new Level(0, 0, 0, .4f, .4f, .4f),
-				new Level(100, 0, 0, .5f, .4f, .4f),
+				new Level(0, -2, -2, .4f, .4f, .4f),
+				new Level(100, -1, -1, .5f, .4f, .4f),
 				new Level(200, 0, 0, .6f, .4f, .4f),
 		});
 		ARCHER.addLevels(new Level[] {
@@ -32,36 +34,26 @@ public enum RoleClass {
 		
 	}
 
-	private SortedList<Level> levels;
-	private String name, prefix, suffix;
+	private SortedList<Level> levels = new SortedList<>(new Level.LevelComparator());
+	private String name, desc, prefix = "", suffix = "";
 
-	private RoleClass(String name) {
+	private RoleClass(String name, String desc) {
 		this.name = name;
-		levels = new SortedList<>(new Level.LevelComparator());
-		prefix = suffix = "";
+		this.desc = desc;
 	}
 
-	private RoleClass(String name, String prefix) {
+	private RoleClass(String name, String desc, String prefix) {
 		this.name = name;
-		levels = new SortedList<>(new Level.LevelComparator());
-		this.prefix = prefix.trim();
-		suffix = "";
-	}
-
-
-	private RoleClass(String name, String prefix, String suffix) {
-		this.name = name;
-		levels = new SortedList<>(new Level.LevelComparator());
-		this.prefix = prefix.trim();
-		this.suffix = suffix.trim();
+		this.desc = desc;
+		this.prefix = prefix;
 	}
 
 
-	private RoleClass(String name, float strength, float dexterity, float resistance, float block, float dodge) {
+	private RoleClass(String name, String desc, String prefix, String suffix) {
 		this.name = name;
-		levels = new SortedList<>(new Level.LevelComparator());
-		this.levels.add(new Level(0, strength, dexterity, resistance, block, dodge));
-		prefix = suffix = "";
+		this.desc = desc;
+		this.prefix = prefix;
+		this.suffix = suffix;
 	}
 
 	private RoleClass(String name, String prefix, float strength, float dexterity, float resistance, float block,
@@ -82,11 +74,11 @@ public enum RoleClass {
 		this.suffix = suffix.trim();
 	}
 	
-	public void addLevel(Level lvl) {
+	private void addLevel(Level lvl) {
 		levels.add(lvl);
 	}
 	
-	public void addLevels(Level[] lvls) {
+	private void addLevels(Level[] lvls) {
 		for (Level level : lvls) {
 			addLevel(level);
 		}
@@ -95,13 +87,13 @@ public enum RoleClass {
 	public SortedList<Level> getLevels() {
 		return levels;
 	}
-	
-	public void setLevels(SortedList<Level> levels) {
-		this.levels = levels;
-	}
 
 	public String getName() {
 		return name;
+	}
+	
+	public String getDesc() {
+		return desc;
 	}
 
 	public String getPrefix() {
@@ -112,4 +104,8 @@ public enum RoleClass {
 		return suffix;
 	}
 
+	@Override
+	public String toString() {
+		return name+" ("+desc+")";
+	}
 }

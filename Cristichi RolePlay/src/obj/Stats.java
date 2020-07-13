@@ -150,6 +150,4 @@ public class Stats {
 		return "Stats [className=" + className + ", preffix=" + preffix + ", suffix=" + suffix + ", levels=" + levels
 				+ ", exp=" + exp + "]";
 	}
-	
-	
 }
