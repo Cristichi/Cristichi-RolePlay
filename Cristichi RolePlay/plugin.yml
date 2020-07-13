@@ -1,22 +1,19 @@
 name: RolePlay
 main: main.CrisPlay
-version: 0.115
+version: 1.15
 api-version: 1.13
 commands:
   roleplay:
     description: Controls this plugin.
-    aliases: [rp, rol, rolep, rplay]
-    usage: /rp help
+    aliases: [rp, role, rolep, rplay, crp, crisrp]
+    usage: Try /rp help
 
 permissions:
   crisrp.*:
     description: Gives access to all Cristichi's RolePlay commands
     children:
-      cristreecapitator.admin: true
-      cristreecapitator.use: true
-  crisrp.admin:
-    description: Allows you to change config values and anyone's stats at will
-    default: op
+      crisrp.admin: true
+      crisrp.use: true
   crisrp.use:
     description: Allows you to have stats
     default: true
