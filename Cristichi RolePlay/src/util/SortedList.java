@@ -143,6 +143,20 @@ public class SortedList<T> extends ArrayList<T> {
 		return new Level(0, 0, 0, 0, 0, 0);
 	}
 
+	public static int getNumLevel(SortedList<Level> levels, int exp) {
+		try {
+			for (int i = levels.size()-1; i >= 0; i--) {
+				Level lvl = levels.get(i);
+				if (exp >= lvl.getRequiredExp()) {
+					return i+1;
+				}
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
 	public static int getExpForNextLevel(SortedList<Level> levels, int exp) {
 		try {
 			for (int i = 0; i < levels.size(); i++) {

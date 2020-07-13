@@ -4,13 +4,13 @@ import util.SortedList;
 
 public class Stats {
 
-	private String className, preffix, suffix;
+	private String className, prefix, suffix;
 	private SortedList<Level> levels;
 	private int exp;
 
 	public Stats() {
 		className  = "(No Class)";
-		preffix = suffix = "";
+		prefix = suffix = "";
 		levels = new SortedList<>(new Level.LevelComparator());
 		exp = 0;
 	}
@@ -28,7 +28,7 @@ public class Stats {
 	 */
 	public Stats(String className, String preffix, String suffix, SortedList<Level> levels) {
 		this.className = className;
-		this.preffix = preffix;
+		this.prefix = preffix;
 		this.suffix = suffix;
 		this.levels = levels;
 		exp = 0;
@@ -45,7 +45,7 @@ public class Stats {
 	 */
 	public Stats(RoleClass base, SortedList<Level> levels) {
 		className = base.getName();
-		preffix = base.getPrefix();
+		prefix = base.getPrefix();
 		suffix = base.getSuffix();
 		this.levels = levels;
 		exp = 0;
@@ -66,7 +66,7 @@ public class Stats {
 
 	public Stats(Stats copy) {
 		className = copy.className;
-		preffix = copy.preffix;
+		prefix = copy.prefix;
 		suffix = copy.suffix;
 		levels = copy.levels;
 		exp = copy.exp;
@@ -75,7 +75,7 @@ public class Stats {
 	public Stats(RoleClass base) {
 		this(base.getLevels());
 		className = base.getName();
-		preffix = base.getPrefix();
+		prefix = base.getPrefix();
 		suffix = base.getSuffix();
 		levels = base.getLevels();
 		exp = 0;
@@ -89,12 +89,12 @@ public class Stats {
 		this.className = className;
 	}
 
-	public String getPreffix() {
-		return preffix;
+	public String getPrefix() {
+		return prefix.replace("%lvl", ""+SortedList.getNumLevel(levels, exp));
 	}
 
-	public void setPreffix(String preffix) {
-		this.preffix = preffix;
+	public void setPrefix(String prefix) {
+		this.prefix = prefix;
 	}
 
 	public String getSuffix() {
@@ -147,7 +147,7 @@ public class Stats {
 
 	@Override
 	public String toString() {
-		return "Stats [className=" + className + ", preffix=" + preffix + ", suffix=" + suffix + ", levels=" + levels
+		return "Stats [className=" + className + ", preffix=" + prefix + ", suffix=" + suffix + ", levels=" + levels
 				+ ", exp=" + exp + "]";
 	}
 }
