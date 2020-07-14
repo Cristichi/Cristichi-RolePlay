@@ -4,6 +4,8 @@ public class Stats {
 
 	private String className, prefix, suffix;
 	private Levels levels;
+	private Level lastCalcedLevel = null;
+	private Integer lastCalcedExp = null;
 	private int exp;
 
 //	public Stats() {
@@ -71,7 +73,7 @@ public class Stats {
 	}
 
 	public String getPrefix() {
-		return prefix.replace("%lvl", ""+levels.getNumLevel(exp));
+		return prefix.replace("%lvl", "" + levels.getNumLevel(exp));
 	}
 
 	public void setPrefix(String prefix) {
@@ -85,7 +87,7 @@ public class Stats {
 	public void setSuffix(String suffix) {
 		this.suffix = suffix;
 	}
-	
+
 	public int getExp() {
 		return exp;
 	}
@@ -94,40 +96,38 @@ public class Stats {
 		this.exp = exp;
 	}
 
-	public void increaseExp(int increase) {
-		exp+=increase;
-	}
-	
-	public Level getCurrentLevel() {
-		return levels.getLevel(exp);
+	/**
+	 * Increases (or decreases, if negative) the current amount of exp by the amount given
+	 * @param exp
+	 * @return boolean if level changes becase of the exp change
+	 */
+	public boolean changeExp(int exp) {
+		int current = levels.getNumLevel(this.exp);
+		this.exp += exp;
+		if (current != levels.getNumLevel(this.exp)) {
+			return true;
+		}
+		return false;
 	}
 
-//	public double getStrength() {
-//		return levels.getLevel(exp).getStrength();
-//	}
-//
-//	public double getDexterity() {
-//		return levels.getLevel(exp).getDexterity();
-//	}
-//
-//	public float getResistance() {
-//		return levels.getLevel(exp).getResistance();
-//	}
-//
-//	public float getBlock() {
-//		return levels.getLevel(exp).getBlock();
-//	}
-//
-//	public float getDodge() {
-//		return levels.getLevel(exp).getDodge();
-//	}
+	public Level getCurrentLevel() {
+		if (lastCalcedLevel != null && lastCalcedExp != null && lastCalcedExp == exp) {
+			return lastCalcedLevel;
+		}
+		Level lvl = levels.getLevel(exp);
+		lastCalcedLevel = new Level(lvl);
+		lastCalcedExp = new Integer(exp);
+		return lvl;
+	}
 
 	public int getNextLevelTotalExp() {
-		return levels.getExpForNextLevel(exp) + exp;
+		Level lvl = getCurrentLevel();
+		return lvl.getRequiredExp();
 	}
 
 	public int getExpForNextLevel() {
-		return levels.getExpForNextLevel(exp);
+		Level lvl = getCurrentLevel();
+		return lvl.getRequiredExp() - exp;
 	}
 
 	@Override

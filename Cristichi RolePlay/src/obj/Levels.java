@@ -1,5 +1,6 @@
 package obj;
 
+import exceptions.LevelAlgorithmException;
 import util.SortedList;
 
 public class Levels extends SortedList<Level>{
@@ -42,7 +43,7 @@ public class Levels extends SortedList<Level>{
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-		return new Level(0, 0, 0, 0, 0, 0);
+		throw new LevelAlgorithmException();
 	}
 
 	public int getNumLevel(int exp) {
@@ -64,28 +65,28 @@ public class Levels extends SortedList<Level>{
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-		return 0;
+		throw new LevelAlgorithmException();
 	}
 
-	public int getExpForNextLevel(int exp) {
-		try {
-			int i = 0;
-			Level lvl = null;
-			for(; true; i++) {
-				if (i < size()) {
-					lvl = new Level(get(i));
-				} else if (lvl != null) {
-					lvl = lvl.add(increase);
-				} else {
-					lvl = new Level(increase);
-				}
-				if (exp < lvl.getRequiredExp()) {
-					return lvl.getRequiredExp() - exp;
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return -1;
-	}
+//	public int getExpForNextLevel(int exp) {
+//		try {
+//			int i = 0;
+//			Level lvl = null;
+//			for(; true; i++) {
+//				if (i < size()) {
+//					lvl = new Level(get(i));
+//				} else if (lvl != null) {
+//					lvl = lvl.add(increase);
+//				} else {
+//					lvl = new Level(increase);
+//				}
+//				if (exp < lvl.getRequiredExp()) {
+//					return lvl.getRequiredExp() - exp;
+//				}
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		throw new LevelAlgorithmException();
+//	}
 }

@@ -45,21 +45,25 @@ public class ExpListener implements Listener {
 		Player p = e.getPlayer();
 		Stats stats = StatsPlayer.players.get(p.getUniqueId());
 		if (stats != null && stats.getClassName().equals(RoleClass.BEGGAR.getName()) && Math.random() < 0.001) {
-			stats.increaseExp(1);
-			StatsPlayer.players.put(p.getUniqueId(), stats);
 			p.sendMessage(plugin.header + "You gained 1 exp for walking!");
+			if (stats.changeExp(1)) {
+				p.sendMessage(plugin.header + "You are now " + stats.getClassName() + " " + stats.getNumLevel() + "!");
+			}
+			StatsPlayer.players.put(p.getUniqueId(), stats);
 			p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
 		} else if (stats != null && stats.getClassName().equals(RoleClass.RIDER.getName()) && p.isInsideVehicle()) {
 			double prob = 0.02 * e.getFrom().distance(e.getTo());
-			if (Math.random() < prob) {
-				stats.increaseExp(1);
+			if (Math.random() > prob) {
+				p.sendMessage(plugin.header + "You gained 1 exp for riding " + p.getVehicle().getName() + "!");
+				if (stats.changeExp(1)) {
+					p.sendMessage(plugin.header + "You are now " + stats.getClassName() + " " + stats.getNumLevel() + "!");
+				}
 				StatsPlayer.players.put(p.getUniqueId(), stats);
-				p.sendMessage(plugin.header + "You gained 1 exp for riding "+p.getVehicle().getName()+"!");
-				p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);	
+				p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
 			}
 		}
 	}
-	
+
 	@EventHandler
 	private void onPlayerRiding(VehicleMoveEvent e) {
 		Vehicle v = e.getVehicle();
@@ -70,15 +74,17 @@ public class ExpListener implements Listener {
 				Stats stats = StatsPlayer.players.get(p.getUniqueId());
 				double prob = 0.005 * e.getFrom().distance(e.getTo());
 				if (stats != null && stats.getClassName().equals(RoleClass.RIDER.getName()) && Math.random() < prob) {
-					stats.increaseExp(1);
+					p.sendMessage(plugin.header + "You gained 1 exp for moving inside " + v.getName() + "!");
+					if (stats.changeExp(1)) {
+						p.sendMessage(plugin.header + "You are now " + stats.getClassName() + " " + stats.getNumLevel() + "!");
+					}
 					StatsPlayer.players.put(p.getUniqueId(), stats);
-					p.sendMessage(plugin.header + "You gained 1 exp for moving inside "+v.getName()+"!");
 					p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
 				}
 			}
 		}
 	}
-	
+
 	@EventHandler
 	private void onPlayerRiding(HorseJumpEvent e) {
 		AbstractHorse horse = e.getEntity();
@@ -89,9 +95,11 @@ public class ExpListener implements Listener {
 				Stats stats = StatsPlayer.players.get(p.getUniqueId());
 				double prob = 0.2 * e.getPower();
 				if (stats != null && stats.getClassName().equals(RoleClass.RIDER.getName()) && Math.random() < prob) {
-					stats.increaseExp(1);
+					p.sendMessage(plugin.header + "You gained 1 exp for jumping with " + horse.getName() + "!");
+					if (stats.changeExp(1)) {
+						p.sendMessage(plugin.header + "You are now " + stats.getClassName() + " " + stats.getNumLevel() + "!");
+					}
 					StatsPlayer.players.put(p.getUniqueId(), stats);
-					p.sendMessage(plugin.header + "You gained 1 exp for jumping with "+horse.getName()+"!");
 					p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
 				}
 			}
@@ -107,9 +115,11 @@ public class ExpListener implements Listener {
 			Player p = (Player) offender;
 			Stats stats = StatsPlayer.players.get(p.getUniqueId());
 			if (stats != null && stats.getClassName().equals(RoleClass.WARRIOR.getName()) && Math.random() < 0.1) {
-				stats.increaseExp(1);
-				StatsPlayer.players.put(p.getUniqueId(), stats);
 				p.sendMessage(plugin.header + "You gained 1 exp for hitting " + defender.getName() + "!");
+				if (stats.changeExp(1)) {
+					p.sendMessage(plugin.header + "You are now " + stats.getClassName() + " " + stats.getNumLevel() + "!");
+				}
+				StatsPlayer.players.put(p.getUniqueId(), stats);
 				p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
 			}
 		}
@@ -143,10 +153,12 @@ public class ExpListener implements Listener {
 					}
 					if (stats != null && stats.getClassName().equals(RoleClass.ARCHER.getName())
 							&& Math.random() < prob) {
-						stats.increaseExp(1);
-						StatsPlayer.players.put(p.getUniqueId(), stats);
 						p.sendMessage(plugin.header + "You gained 1 exp for hitting " + defender.getName() + " with "
 								+ projectileName + "!");
+						if (stats.changeExp(1)) {
+							p.sendMessage(plugin.header + "You are now " + stats.getClassName() + " " + stats.getNumLevel() + "!");
+						}
+						StatsPlayer.players.put(p.getUniqueId(), stats);
 						p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
 						offender = p;
 					}
@@ -157,10 +169,12 @@ public class ExpListener implements Listener {
 		if (defender instanceof Player) {
 			Player p = (Player) defender;
 			Stats stats = StatsPlayer.players.get(p.getUniqueId());
-			if (stats != null && stats.getClassName().equals(RoleClass.TANK.getName()) && Math.random() < 0.1) {
-				stats.increaseExp(1);
-				StatsPlayer.players.put(p.getUniqueId(), stats);
+			if (stats != null && stats.getClassName().equals(RoleClass.TANK.getName()) && Math.random() < 0.05) {
 				p.sendMessage(plugin.header + "You gained 1 exp for getting hit by " + offender.getName() + "!");
+				if (stats.changeExp(1)) {
+					p.sendMessage(plugin.header + "You are now " + stats.getClassName() + " " + stats.getNumLevel() + "!");
+				}
+				StatsPlayer.players.put(p.getUniqueId(), stats);
 				p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
 			}
 		}
@@ -199,11 +213,13 @@ public class ExpListener implements Listener {
 		if (e.getState().equals(State.CAUGHT_FISH)) {
 			Player p = e.getPlayer();
 			Stats stats = StatsPlayer.players.get(e.getPlayer().getUniqueId());
-			p.sendMessage("Estado: "+e.getState());
+			p.sendMessage("Estado: " + e.getState());
 			if (stats != null && stats.getClassName().equals(RoleClass.FISHERMAN.getName()) && Math.random() < 0.3) {
-				stats.increaseExp(1);
-				StatsPlayer.players.put(p.getUniqueId(), stats);
 				p.sendMessage(plugin.header + "You gained 1 exp for fishing " + e.getCaught().getName() + "!");
+				if (stats.changeExp(1)) {
+					p.sendMessage(plugin.header + "You are now " + stats.getClassName() + " " + stats.getNumLevel() + "!");
+				}
+				StatsPlayer.players.put(p.getUniqueId(), stats);
 				p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
 			}
 		}
