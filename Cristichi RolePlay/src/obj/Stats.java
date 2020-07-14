@@ -1,19 +1,17 @@
 package obj;
 
-import util.SortedList;
-
 public class Stats {
 
 	private String className, prefix, suffix;
-	private SortedList<Level> levels;
+	private Levels levels;
 	private int exp;
 
-	public Stats() {
-		className  = "(No Class)";
-		prefix = suffix = "";
-		levels = new SortedList<>(new Level.LevelComparator());
-		exp = 0;
-	}
+//	public Stats() {
+//		className  = "(No Class)";
+//		prefix = suffix = "";
+//		levels = new Levels(new Level(0,0,0,0,0,0));
+//		exp = 0;
+//	}
 
 	/**
 	 * 
@@ -26,7 +24,7 @@ public class Stats {
 	 * @param block
 	 * @param dodge
 	 */
-	public Stats(String className, String preffix, String suffix, SortedList<Level> levels) {
+	public Stats(String className, String preffix, String suffix, Levels levels) {
 		this.className = className;
 		this.prefix = preffix;
 		this.suffix = suffix;
@@ -34,16 +32,7 @@ public class Stats {
 		exp = 0;
 	}
 
-	/**
-	 * 
-	 * @param base       The class this Stats evolved from (just for naming reasons)
-	 * @param strength   Extra damage to physical attacks
-	 * @param dexterity  Extra damage to arrows
-	 * @param resistance % reduced damage
-	 * @param block      % chance to reduce a physical attack's damage to 0
-	 * @param            dodge% chance to reduce a arrow's damage to 0
-	 */
-	public Stats(RoleClass base, SortedList<Level> levels) {
+	public Stats(RoleClass base, Levels levels) {
 		className = base.getName();
 		prefix = base.getPrefix();
 		suffix = base.getSuffix();
@@ -51,15 +40,7 @@ public class Stats {
 		exp = 0;
 	}
 
-	/**
-	 * 
-	 * @param strength   Extra damage to physical attacks
-	 * @param dexterity  Extra damage to arrows
-	 * @param resistance % reduced damage
-	 * @param block      % chance to reduce a physical attack's damage to 0
-	 * @param            dodge% chance to reduce a arrow's damage to 0
-	 */
-	public Stats(SortedList<Level> levels) {
+	public Stats(Levels levels) {
 		this.levels = levels;
 		exp = 0;
 	}
@@ -90,7 +71,7 @@ public class Stats {
 	}
 
 	public String getPrefix() {
-		return prefix.replace("%lvl", ""+SortedList.getNumLevel(levels, exp));
+		return prefix.replace("%lvl", ""+levels.getNumLevel(exp));
 	}
 
 	public void setPrefix(String prefix) {
@@ -116,38 +97,46 @@ public class Stats {
 	public void increaseExp(int increase) {
 		exp+=increase;
 	}
-
-	public double getStrength() {
-		return SortedList.getLevel(levels, exp).getStrength();
+	
+	public Level getCurrentLevel() {
+		return levels.getLevel(exp);
 	}
 
-	public double getDexterity() {
-		return SortedList.getLevel(levels, exp).getDexterity();
-	}
-
-	public float getResistance() {
-		return SortedList.getLevel(levels, exp).getResistance();
-	}
-
-	public float getBlock() {
-		return SortedList.getLevel(levels, exp).getBlock();
-	}
-
-	public float getDodge() {
-		return SortedList.getLevel(levels, exp).getDodge();
-	}
+//	public double getStrength() {
+//		return levels.getLevel(exp).getStrength();
+//	}
+//
+//	public double getDexterity() {
+//		return levels.getLevel(exp).getDexterity();
+//	}
+//
+//	public float getResistance() {
+//		return levels.getLevel(exp).getResistance();
+//	}
+//
+//	public float getBlock() {
+//		return levels.getLevel(exp).getBlock();
+//	}
+//
+//	public float getDodge() {
+//		return levels.getLevel(exp).getDodge();
+//	}
 
 	public int getNextLevelTotalExp() {
-		return SortedList.getExpForNextLevel(levels, exp) + exp;
+		return levels.getExpForNextLevel(exp) + exp;
 	}
 
 	public int getExpForNextLevel() {
-		return SortedList.getExpForNextLevel(levels, exp);
+		return levels.getExpForNextLevel(exp);
 	}
 
 	@Override
 	public String toString() {
 		return "Stats [className=" + className + ", preffix=" + prefix + ", suffix=" + suffix + ", levels=" + levels
 				+ ", exp=" + exp + "]";
+	}
+
+	public int getNumLevel() {
+		return levels.getNumLevel(exp);
 	}
 }

@@ -14,6 +14,15 @@ public class Level implements Comparable<Level> {
 		this.block = block;
 		this.dodge = dodge;
 	}
+	
+	public Level(Level copy) {
+		requiredExp = copy.requiredExp;
+		strength = copy.strength;
+		dexterity = copy.dexterity;
+		resistance = copy.resistance;
+		block = copy.block;
+		dodge = copy.dodge;
+	}
 
 	public int getRequiredExp() {
 		return requiredExp;
@@ -62,10 +71,30 @@ public class Level implements Comparable<Level> {
 	public void setDodge(float dodge) {
 		this.dodge = dodge;
 	}
+	
+	public Level add(Level increase) {
+		float res = resistance + increase.getResistance(),
+				blo = block + increase.getBlock(),
+				dod = dodge + increase.getDodge();
+		if (res > 1) res = 1;
+		if (blo > 1) blo = 1;
+		if (dod > 1) dod = 1;
+		return new Level(requiredExp + increase.getRequiredExp(),
+				strength + increase.getStrength(),
+				dexterity + increase.getDexterity(),
+				res, blo, dod
+				);
+	}
 
 	@Override
 	public int compareTo(Level o) {
 		return requiredExp > o.requiredExp ? 1 : requiredExp < o.requiredExp ? -1 : 0;
+	}
+
+	@Override
+	public String toString() {
+		return "Level [requiredExp=" + requiredExp + ", strength=" + strength + ", dexterity=" + dexterity
+				+ ", resistance=" + resistance + ", block=" + block + ", dodge=" + dodge + "]";
 	}
 
 	public static class LevelComparator implements Comparator<Level> {
@@ -75,4 +104,6 @@ public class Level implements Comparable<Level> {
 		}
 
 	}
+	
+	public static LevelComparator Comparator = new LevelComparator();
 }

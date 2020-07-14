@@ -1,8 +1,8 @@
 package obj;
 
-import main.CrisPlay;
-import util.SortedList;
 import org.bukkit.ChatColor;
+
+import main.CrisPlay;
 
 public enum RoleClass {
 	BEGGAR("Beggar", "You aren't much at the start but you will level up easier.",
@@ -19,41 +19,41 @@ public enum RoleClass {
 			"You gain experience while moving on minecarts, boats, horses, etc.", CrisPlay.mainColor + "[Rider %lvl]" + ChatColor.RESET),
 	;
 	static {
-		BEGGAR.addLevels(new Level[] {
+		BEGGAR.setLevels(new Level[] {
 				new Level(0, 0, 0, 0, 0, 0),
 				new Level(100, 0, 0, 0, 0, 0),
 				new Level(200, 0, 0, 0, 0, 0),
-		});
-		WARRIOR.addLevels(new Level[] {
+		}, new Level(100, 1, 1, .001f, .001f, .001f));
+		WARRIOR.setLevels(new Level[] {
 				new Level(0, 2, 0, 0f, .1f, 0),
 				new Level(100, 4, 0, 0f, .1f, 0),
 				new Level(200, 6, 0, .1f, .1f, 0),
-		});
-		TANK.addLevels(new Level[] {
+		}, new Level(100, 0, 0, 0, 0, 0));
+		TANK.setLevels(new Level[] {
 				new Level(0, -2, -2, .4f, .4f, .4f),
 				new Level(100, -1, -1, .5f, .4f, .4f),
 				new Level(200, 0, 0, .6f, .4f, .4f),
-		});
-		ARCHER.addLevels(new Level[] {
+		}, new Level(100, 0, 0, 0, 0, 0));
+		ARCHER.setLevels(new Level[] {
 				new Level(0, 0, 2, .1f, 0, .1f),
 				new Level(100, 0, 4, .1f, 0, .1f),
 				new Level(200, 0, 6, .1f, 0, .1f),
-		});
+		}, new Level(100, 0, 0, 0, 0, 0));
 		// strength, dexterity, resistance, block, dodge
-		FISHERMAN.addLevels(new Level[] {
+		FISHERMAN.setLevels(new Level[] {
 				new Level(0, 1, 1, 0, 0, 0f),
 				new Level(80, 2, 2, 0, 0, 0f),
 				new Level(160, 3, 3, 0, 0, 0f),
-		});
-		RIDER.addLevels(new Level[] {
+		}, new Level(100, 0, 0, 0, 0, 0));
+		RIDER.setLevels(new Level[] {
 				new Level(0, 0, 1, 0, 0, .3f),
 				new Level(80, 1, 2, 0, 0, .4f),
 				new Level(160, 2, 3, 0, 0, .5f),
-		});
+		}, new Level(100, 0, 0, 0, 0, 0));
 		
 	}
 
-	private SortedList<Level> levels = new SortedList<>(new Level.LevelComparator());
+	private Levels levels;
 	private String name, desc, info, prefix = "", suffix = "";
 
 	private RoleClass(String name, String desc, String info) {
@@ -78,17 +78,14 @@ public enum RoleClass {
 		this.suffix = suffix;
 	}
 	
-	private void addLevel(Level lvl) {
-		levels.add(lvl);
-	}
-	
-	private void addLevels(Level[] lvls) {
+	private void setLevels(Level[] lvls, Level increase) {
+		levels = new Levels(increase);
 		for (Level level : lvls) {
-			addLevel(level);
+			levels.add(level);
 		}
 	}
 	
-	public SortedList<Level> getLevels() {
+	public Levels getLevels() {
 		return levels;
 	}
 

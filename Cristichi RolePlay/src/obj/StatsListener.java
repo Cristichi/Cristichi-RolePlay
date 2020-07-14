@@ -29,7 +29,7 @@ public class StatsListener implements Listener {
 			Player p = (Player) offender;
 			Stats stats = StatsPlayer.players.get(p.getUniqueId());
 			if (stats != null) {
-				e.setDamage(e.getDamage() + stats.getStrength());
+				e.setDamage(e.getDamage() + stats.getCurrentLevel().getStrength());
 			}
 		}
 
@@ -37,6 +37,7 @@ public class StatsListener implements Listener {
 		if (defender instanceof Player) {
 			Player p = (Player) defender;
 			Stats stats = StatsPlayer.players.get(p.getUniqueId());
+			Level lvl = stats.getCurrentLevel();
 			if (stats != null) {
 				float chance0dmg = 0;
 				switch (e.getCause()) {
@@ -44,16 +45,16 @@ public class StatsListener implements Listener {
 				case ENTITY_SWEEP_ATTACK:
 				case BLOCK_EXPLOSION:
 				case ENTITY_EXPLOSION:
-					chance0dmg = stats.getBlock();
+					chance0dmg = lvl.getBlock();
 					break;
 				case PROJECTILE:
-					chance0dmg = stats.getDodge();
+					chance0dmg = lvl.getDodge();
 					break;
 
 				default:
 					break;
 				}
-				double newDmg = e.getDamage() * (1 - stats.getResistance());
+				double newDmg = e.getDamage() * (1 - lvl.getResistance());
 				if (Math.random() < chance0dmg) {
 					e.setCancelled(true);
 					p.playSound(p.getLocation(), Sound.ITEM_SHIELD_BLOCK, 1, 1);
@@ -82,7 +83,7 @@ public class StatsListener implements Listener {
 			Stats stats = StatsPlayer.players.get(p.getUniqueId());
 			if (stats != null) {
 				Entity proyectil = e.getProjectile();
-				proyectil.setMetadata(META_ARROW_DAMAGE, new FixedMetadataValue(plugin, stats.getDexterity()));
+				proyectil.setMetadata(META_ARROW_DAMAGE, new FixedMetadataValue(plugin, stats.getCurrentLevel().getDexterity()));
 			}
 		}
 	}
@@ -94,7 +95,7 @@ public class StatsListener implements Listener {
 			Player p = (Player) defender;
 			Stats clase = StatsPlayer.players.get(p.getUniqueId());
 			if (clase != null) {
-				if (Math.random() < clase.getBlock()) {
+				if (Math.random() < clase.getCurrentLevel().getBlock()) {
 					p.playSound(p.getLocation(), Sound.ITEM_SHIELD_BLOCK, 1, 1);
 				}
 			}

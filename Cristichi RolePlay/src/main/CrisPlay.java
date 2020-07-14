@@ -199,6 +199,14 @@ public class CrisPlay extends JavaPlugin implements Listener {
 				sender.sendMessage(header + "Only players can have stats.");
 			}
 			break;
+		case "test":
+			try {
+				Stats stats = StatsPlayer.players.get(((Player) sender).getUniqueId());
+				stats.setExp(Integer.parseInt(args[1]));
+				StatsPlayer.players.put(((Player) sender).getUniqueId(), stats);
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
 		case "stats":
 			if (sender instanceof Player) {
 				Player p = (Player) sender;
@@ -206,92 +214,20 @@ public class CrisPlay extends JavaPlugin implements Listener {
 				if (stats == null) {
 					sender.sendMessage(header+"You have to choose a class first. You can use /"+label+" choose (Class Name)");
 				}else {
+					Level lvl = stats.getCurrentLevel();
 					sender.sendMessage(header + "Your stats:");
-					sender.sendMessage(accentColor + " Class"+textColor+": " + stats.getClassName());
-					sender.sendMessage(accentColor + " Experience"+textColor+": " + stats.getExp()+textColor + accentColor + "/" + textColor + stats.getNextLevelTotalExp());
-					sender.sendMessage(accentColor + " Strength"+textColor+": " + stats.getStrength());
-					sender.sendMessage(accentColor + " Dexterity"+textColor+": " + stats.getDexterity());
+					sender.sendMessage(accentColor + " Class"+textColor+": " + stats.getClassName() + accentColor + " Level " + textColor+stats.getNumLevel());
+					sender.sendMessage(accentColor + " Experience"+textColor+": " + stats.getExp() + textColor + accentColor + "/" + textColor + stats.getNextLevelTotalExp());
+					sender.sendMessage(accentColor + " Strength"+textColor+": " + lvl.getStrength());
+					sender.sendMessage(accentColor + " Dexterity"+textColor+": " + lvl.getDexterity());
 					sender.sendMessage(
-							accentColor + " Resistance"+textColor+": " + (int) (stats.getResistance() * 100) + accentColor + "%");
-					sender.sendMessage(accentColor + " Block"+textColor+": " + (int) (stats.getBlock() * 100) + accentColor + "%");
-					sender.sendMessage(accentColor + " Dodge"+textColor+": " + (int) (stats.getDodge() * 100) + accentColor + "%");
+							accentColor + " Resistance"+textColor+": " + (int) (lvl.getResistance() * 100) + accentColor + "%");
+					sender.sendMessage(accentColor + " Block"+textColor+": " + (int) (lvl.getBlock() * 100) + accentColor + "%");
+					sender.sendMessage(accentColor + " Dodge"+textColor+": " + (int) (lvl.getDodge() * 100) + accentColor + "%");
 				}
 			} else
 				sender.sendMessage(header + "Only players can have stats.");
 			break;
-
-//		case "set":
-//		case "add":
-//			if (sender instanceof Player) {
-//				if (sender.hasPermission("crisrp.admin")) {
-//					try {
-//						if (args.length >= 2) {
-//							if (args.length >= 3) {
-//								String elegido = args[1].toLowerCase();
-//								Player p = (Player) sender;
-//								float valorNuevo = Float.parseFloat(args[2]);
-//								Stats clase = StatsPlayer.players.getOrDefault(p.getUniqueId(), new Stats());
-//								switch (elegido) {
-//								case "str":
-//								case "dmg":
-//								case "damage":
-//								case "power":
-//								case "strength":
-//									clase.setStrength(
-//											(int) (valorNuevo + (args[0].equals("add") ? clase.getStrength() : 0)));
-//									sender.sendMessage(header + "New Strength: " + accentColor + clase.getStrength());
-//									break;
-//								case "dex":
-//								case "dexterity":
-//									clase.setDexterity(
-//											(int) (valorNuevo + (args[0].equals("add") ? clase.getDexterity() : 0)));
-//									sender.sendMessage(header + "New Dexterity: " + accentColor + clase.getDexterity());
-//									break;
-//								case "res":
-//								case "resist":
-//								case "resistance":
-//									clase.setResistance(
-//											valorNuevo + (args[0].equals("add") ? clase.getResistance() : 0));
-//									sender.sendMessage(
-//											header + "New Resistance: " + accentColor + clase.getResistance());
-//									break;
-//								case "blc":
-//								case "blo":
-//								case "block":
-//									clase.setBlock(valorNuevo + (args[0].equals("add") ? clase.getBlock() : 0));
-//									sender.sendMessage(header + "New Block: " + accentColor + clase.getBlock());
-//									break;
-//								case "dod":
-//								case "dodge":
-//									clase.setDodge(valorNuevo + (args[0].equals("add") ? clase.getDodge() : 0));
-//									sender.sendMessage(header + "new Dodge: " + accentColor + clase.getDodge());
-//									break;
-//
-//								default:
-//									sender.sendMessage(
-//											header + errorColor + "You must specify one of the available stats.");
-//									break;
-//								}
-//								StatsPlayer.players.put(p.getUniqueId(), clase);
-//								StatsPlayer.saveAllPlayersStats(ARCHIVO_JUGADORES);
-//							} else {
-//								sender.sendMessage(header + errorColor + "You must specify how much.");
-//							}
-//						} else {
-//							sender.sendMessage(header + errorColor + "You must specify a stat.");
-//						}
-//					} catch (NumberFormatException e) {
-//						sender.sendMessage(header + errorColor + "The quantity must be a number.");
-//					} catch (IllegalArgumentException e) {
-//						sender.sendMessage(
-//								header + errorColor + "That stat must be a number between 0 y 1 (both included).");
-//					}
-//				} else {
-//					sender.sendMessage(header+"You don't have permission to do that.");
-//				}
-//			} else
-//				sender.sendMessage(header + "Only players can have stats.");
-//			break;
 
 		default:
 			correct = false;
@@ -313,10 +249,6 @@ public class CrisPlay extends JavaPlugin implements Listener {
 			sol.add("classes");
 			sol.add("choose");
 			sol.add("stats");
-//			if (sender.hasPermission("crisrp.admin")) {
-//				sol.add("add");
-//				sol.add("set");
-//			}
 			break;
 
 		case 2:
@@ -326,50 +258,6 @@ public class CrisPlay extends JavaPlugin implements Listener {
 				for (RoleClass roleClass : RoleClass.values()) {
 					sol.add(roleClass.getName());
 				}
-				break;
-//			case "add":
-//			case "set":
-//				sol.add("strength");
-//				sol.add("dexterity");
-//				sol.add("resistance");
-//				sol.add("block");
-//				sol.add("dodge");
-//				break;
-
-			default:
-				break;
-			}
-			break;
-
-		case 3:
-			switch (args[1]) {
-			case "strength":
-			case "dexterity":
-				sol.add("0");
-				sol.add("1");
-				sol.add("2");
-				sol.add("3");
-				sol.add("4");
-				sol.add("5");
-				sol.add("6");
-				sol.add("7");
-				sol.add("8");
-				break;
-
-			case "resistance":
-			case "block":
-			case "dodge":
-				sol.add("0");
-				sol.add("0.1");
-				sol.add("0.2");
-				sol.add("0.3");
-				sol.add("0.4");
-				sol.add("0.5");
-				sol.add("0.6");
-				sol.add("0.7");
-				sol.add("0.8");
-				sol.add("0.9");
-				sol.add("1");
 				break;
 
 			default:
