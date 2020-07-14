@@ -31,9 +31,7 @@ public enum RoleClass {
 		}, new Level(100, 0, 0, 0, 0, 0));
 		TANK.setLevels(new Level[] {
 				new Level(0, -2, -2, .4f, .4f, .4f),
-				new Level(100, -1, -1, .5f, .4f, .4f),
-				new Level(200, 0, 0, .6f, .4f, .4f),
-		}, new Level(100, 0, 0, 0, 0, 0));
+		}, new Level(100, .2f, .2f, .01f, .005f, .005f));
 		ARCHER.setLevels(new Level[] {
 				new Level(0, 0, 2, .1f, 0, .1f),
 				new Level(100, 0, 4, .1f, 0, .1f),
