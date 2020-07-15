@@ -15,12 +15,56 @@ import java.util.StringTokenizer;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.Nullable;
+
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
+import main.CrisPlay;
 
 public class StatsPlayer {
-	public static HashMap<UUID, Stats> players = new HashMap<>();
+	private static HashMap<UUID, Stats> players = new HashMap<>();
 	public static HashMap<UUID, Date> lastChanges = new HashMap<>();
 	public static final long changeClassCD = 100000L;
+	
+	/**
+	 * Gets the player stats, or null if he has no permission or doesn't have any stats associated yet
+	 * @param p Player
+	 * @return Stats, or null
+	 */
+	@Nullable
+	public static Stats getPlayerStats(Player p) {
+		if (!p.hasPermission(CrisPlay.PERMISSION_USE)) {
+			return null;
+		}
+		return players.get(p.getUniqueId());
+	}
+	
+	/**
+	 * Puts stats into a certain player
+	 * @param p Player
+	 * @param stats
+	 * @return true if player can have stats, false if stats didn't change because player has no permission
+	 */
+	public static boolean putPlayerStats(Player p, Stats stats) {
+		if (!p.hasPermission(CrisPlay.PERMISSION_USE)) {
+			return false;
+		}
+		players.put(p.getUniqueId(), stats);
+		return true;
+	}
+	
+	/**
+	 * Checks if player has stats
+	 * @param p Player
+	 * @return true if player has permission to have stats and have them, false otherwise
+	 */
+	public static boolean playerHasStats(Player p) {
+		if (!p.hasPermission(CrisPlay.PERMISSION_USE)) {
+			return false;
+		}
+		return players.containsKey(p.getUniqueId());
+	}
 	
 	public static long millsUntilChoose(UUID id) {
 		if (StatsPlayer.lastChanges.containsKey(id)) {

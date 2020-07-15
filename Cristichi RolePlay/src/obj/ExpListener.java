@@ -43,13 +43,13 @@ public class ExpListener implements Listener {
 	@EventHandler
 	private void onPlayerMove(PlayerMoveEvent e) {
 		Player p = e.getPlayer();
-		Stats stats = StatsPlayer.players.get(p.getUniqueId());
+		Stats stats = StatsPlayer.getPlayerStats(p);
 		if (stats != null && stats.getClassName().equals(RoleClass.BEGGAR.getName()) && Math.random() < 0.001) {
 			p.sendMessage(plugin.header + "You gained 1 exp for walking!");
 			if (stats.changeExp(1)) {
 				p.sendMessage(plugin.header + "You are now " + stats.getClassName() + " " + stats.getNumLevel() + "!");
 			}
-			StatsPlayer.players.put(p.getUniqueId(), stats);
+			StatsPlayer.putPlayerStats(p, stats);
 			p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
 		} else if (stats != null && stats.getClassName().equals(RoleClass.RIDER.getName()) && p.isInsideVehicle()) {
 			double prob = 0.02 * e.getFrom().distance(e.getTo());
@@ -58,7 +58,7 @@ public class ExpListener implements Listener {
 				if (stats.changeExp(1)) {
 					p.sendMessage(plugin.header + "You are now " + stats.getClassName() + " " + stats.getNumLevel() + "!");
 				}
-				StatsPlayer.players.put(p.getUniqueId(), stats);
+				StatsPlayer.putPlayerStats(p, stats);
 				p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
 			}
 		}
@@ -71,14 +71,14 @@ public class ExpListener implements Listener {
 		for (Entity passenger : passengers) {
 			if (passenger instanceof Player) {
 				Player p = (Player) passenger;
-				Stats stats = StatsPlayer.players.get(p.getUniqueId());
+				Stats stats = StatsPlayer.getPlayerStats(p);
 				double prob = 0.005 * e.getFrom().distance(e.getTo());
 				if (stats != null && stats.getClassName().equals(RoleClass.RIDER.getName()) && Math.random() < prob) {
 					p.sendMessage(plugin.header + "You gained 1 exp for moving inside " + v.getName() + "!");
 					if (stats.changeExp(1)) {
 						p.sendMessage(plugin.header + "You are now " + stats.getClassName() + " " + stats.getNumLevel() + "!");
 					}
-					StatsPlayer.players.put(p.getUniqueId(), stats);
+					StatsPlayer.putPlayerStats(p, stats);
 					p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
 				}
 			}
@@ -92,14 +92,14 @@ public class ExpListener implements Listener {
 		for (Entity passenger : passengers) {
 			if (passenger instanceof Player) {
 				Player p = (Player) passenger;
-				Stats stats = StatsPlayer.players.get(p.getUniqueId());
+				Stats stats = StatsPlayer.getPlayerStats(p);
 				double prob = 0.2 * e.getPower();
 				if (stats != null && stats.getClassName().equals(RoleClass.RIDER.getName()) && Math.random() < prob) {
 					p.sendMessage(plugin.header + "You gained 1 exp for jumping with " + horse.getName() + "!");
 					if (stats.changeExp(1)) {
 						p.sendMessage(plugin.header + "You are now " + stats.getClassName() + " " + stats.getNumLevel() + "!");
 					}
-					StatsPlayer.players.put(p.getUniqueId(), stats);
+					StatsPlayer.putPlayerStats(p, stats);
 					p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
 				}
 			}
@@ -113,13 +113,13 @@ public class ExpListener implements Listener {
 
 		if (offender instanceof Player) {
 			Player p = (Player) offender;
-			Stats stats = StatsPlayer.players.get(p.getUniqueId());
+			Stats stats = StatsPlayer.getPlayerStats(p);
 			if (stats != null && stats.getClassName().equals(RoleClass.WARRIOR.getName()) && Math.random() < 0.1) {
 				p.sendMessage(plugin.header + "You gained 1 exp for hitting " + defender.getName() + "!");
 				if (stats.changeExp(1)) {
 					p.sendMessage(plugin.header + "You are now " + stats.getClassName() + " " + stats.getNumLevel() + "!");
 				}
-				StatsPlayer.players.put(p.getUniqueId(), stats);
+				StatsPlayer.putPlayerStats(p, stats);
 				p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
 			}
 		}
@@ -130,7 +130,7 @@ public class ExpListener implements Listener {
 				String offenderName = offender.getMetadata(META_ARROW_ARCHER).get(0).asString();
 				Player p = plugin.getServer().getPlayer(offenderName);
 				if (p != null) {
-					Stats stats = StatsPlayer.players.get(p.getUniqueId());
+					Stats stats = StatsPlayer.getPlayerStats(p);
 					double prob = 0.1;
 					if (offender instanceof Arrow) {
 						prob = 0.2;
@@ -158,7 +158,7 @@ public class ExpListener implements Listener {
 						if (stats.changeExp(1)) {
 							p.sendMessage(plugin.header + "You are now " + stats.getClassName() + " " + stats.getNumLevel() + "!");
 						}
-						StatsPlayer.players.put(p.getUniqueId(), stats);
+						StatsPlayer.putPlayerStats(p, stats);
 						p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
 						offender = p;
 					}
@@ -168,13 +168,13 @@ public class ExpListener implements Listener {
 
 		if (defender instanceof Player) {
 			Player p = (Player) defender;
-			Stats stats = StatsPlayer.players.get(p.getUniqueId());
+			Stats stats = StatsPlayer.getPlayerStats(p);
 			if (stats != null && stats.getClassName().equals(RoleClass.TANK.getName()) && Math.random() < 0.05) {
 				p.sendMessage(plugin.header + "You gained 1 exp for getting hit by " + offender.getName() + "!");
 				if (stats.changeExp(1)) {
 					p.sendMessage(plugin.header + "You are now " + stats.getClassName() + " " + stats.getNumLevel() + "!");
 				}
-				StatsPlayer.players.put(p.getUniqueId(), stats);
+				StatsPlayer.putPlayerStats(p, stats);
 				p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
 			}
 		}
@@ -185,7 +185,7 @@ public class ExpListener implements Listener {
 		LivingEntity offender = e.getEntity();
 		if (offender instanceof Player) {
 			Player p = (Player) offender;
-			Stats stats = StatsPlayer.players.get(p.getUniqueId());
+			Stats stats = StatsPlayer.getPlayerStats(p);
 			if (stats != null && stats.getClassName().equals(RoleClass.ARCHER.getName())) {
 				Entity projectile = e.getProjectile();
 				projectile.setMetadata(META_ARROW_ARCHER, new FixedMetadataValue(plugin, p.getName()));
@@ -200,7 +200,7 @@ public class ExpListener implements Listener {
 			ThrowableProjectile projectile = (ThrowableProjectile) e.getEntity();
 			if (projectile.getShooter() instanceof Player) {
 				Player p = (Player) projectile.getShooter();
-				Stats stats = StatsPlayer.players.get(p.getUniqueId());
+				Stats stats = StatsPlayer.getPlayerStats(p);
 				if (stats != null && stats.getClassName().equals(RoleClass.ARCHER.getName())) {
 					projectile.setMetadata(META_ARROW_ARCHER, new FixedMetadataValue(plugin, p.getName()));
 				}
@@ -212,14 +212,14 @@ public class ExpListener implements Listener {
 	private void onPlayerFish(PlayerFishEvent e) {
 		if (e.getState().equals(State.CAUGHT_FISH)) {
 			Player p = e.getPlayer();
-			Stats stats = StatsPlayer.players.get(e.getPlayer().getUniqueId());
+			Stats stats = StatsPlayer.getPlayerStats(e.getPlayer());
 			p.sendMessage("Estado: " + e.getState());
 			if (stats != null && stats.getClassName().equals(RoleClass.FISHERMAN.getName()) && Math.random() < 0.3) {
 				p.sendMessage(plugin.header + "You gained 1 exp for fishing " + e.getCaught().getName() + "!");
 				if (stats.changeExp(1)) {
 					p.sendMessage(plugin.header + "You are now " + stats.getClassName() + " " + stats.getNumLevel() + "!");
 				}
-				StatsPlayer.players.put(p.getUniqueId(), stats);
+				StatsPlayer.putPlayerStats(p, stats);
 				p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
 			}
 		}

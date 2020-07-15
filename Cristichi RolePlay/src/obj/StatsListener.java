@@ -27,7 +27,7 @@ public class StatsListener implements Listener {
 		Entity offender = e.getDamager();
 		if (offender instanceof Player) {
 			Player p = (Player) offender;
-			Stats stats = StatsPlayer.players.get(p.getUniqueId());
+			Stats stats = StatsPlayer.getPlayerStats(p);
 			if (stats != null) {
 				e.setDamage(e.getDamage() + stats.getCurrentLevel().getStrength());
 			}
@@ -36,7 +36,7 @@ public class StatsListener implements Listener {
 		Entity defender = e.getEntity();
 		if (defender instanceof Player) {
 			Player p = (Player) defender;
-			Stats stats = StatsPlayer.players.get(p.getUniqueId());
+			Stats stats = StatsPlayer.getPlayerStats(p);
 			if (stats != null) {
 				double newDmg = calculateDamage(stats, e.getCause(), e.getDamage(), offender, defender);
 
@@ -66,7 +66,7 @@ public class StatsListener implements Listener {
 		LivingEntity offender = e.getEntity();
 		if (offender instanceof Player) {
 			Player p = (Player) offender;
-			Stats stats = StatsPlayer.players.get(p.getUniqueId());
+			Stats stats = StatsPlayer.getPlayerStats(p);
 			if (stats != null) {
 				Entity proyectil = e.getProjectile();
 				proyectil.setMetadata(META_ARROW_DAMAGE,
@@ -81,7 +81,7 @@ public class StatsListener implements Listener {
 //		Entity defender = e.getHitEntity();
 //		if (defender instanceof Player) {
 //			Player p = (Player) defender;
-//			Stats stats = StatsPlayer.players.get(p.getUniqueId());
+//			Stats stats = StatsPlayer.getPlayerStats(p);
 //			if (stats != null) {
 //				calculateDamage(stats, DamageCause.PROJECTILE, e.get, offender, defender)
 //			}
