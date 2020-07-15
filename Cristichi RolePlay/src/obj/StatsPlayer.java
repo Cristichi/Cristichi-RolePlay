@@ -101,13 +101,6 @@ public class StatsPlayer {
 				fileText += key.toString() + " ("+Bukkit.getOfflinePlayer(key).getName()+"): [";
 				fileText += "\n  Class name: " + value.getClassName();
 				fileText += "\n  Experience: " + value.getExp();
-//				fileText += "\n  Class preffix: " + value.getPreffix();
-//				fileText += "\n  Class suffix: " + value.getSuffix();
-//				fileText += "\n  Strength: " + value.getStrength();
-//				fileText += "\n  Dexirity: " + value.getDexterity();
-//				fileText += "\n  Resistance: " + value.getResistance();
-//				fileText += "\n  Block: " + value.getBlock();
-//				fileText += "\n  Dodge: " + value.getDodge();
 				fileText += "\n]\n";
 			}
 
@@ -129,12 +122,6 @@ public class StatsPlayer {
 			FileReader fr = new FileReader(file);
 			BufferedReader br = new BufferedReader(fr);
 
-			/*
-				736ff9cb-e917-47cd-8038-0b77edf37935 (CristichiEX): [
-				  Class name: Archer
-				  Experience: 0
-				]
-			 */
 			while ((line = br.readLine()) != null) {
 				lineCont++;
 				if (!line.startsWith("#") && !line.isEmpty()) {
@@ -162,27 +149,6 @@ public class StatsPlayer {
 							case "experience":
 								stats.setExp(Integer.parseInt(data));
 								break;
-//							case "class preffix":
-//								stats.setPreffix(st.nextToken());
-//								break;
-//							case "class suffix":
-//								stats.setSuffix(st.nextToken());
-//								break;
-//							case "strength":
-//								stats.setStrength(Float.parseFloat(st.nextToken().trim()));
-//								break;
-//							case "dexirity":
-//								stats.setDexterity(Float.parseFloat(st.nextToken().trim()));
-//								break;
-//							case "resistance":
-//								stats.setResistance(Float.parseFloat(st.nextToken().trim()));
-//								break;
-//							case "block":
-//								stats.setBlock(Float.parseFloat(st.nextToken().trim()));
-//								break;
-//							case "dodge":
-//								stats.setDodge(Float.parseFloat(st.nextToken().trim()));
-//								break;
 
 							default:
 								throw new NullPointerException("stat \""+dataName+"\" not recognized");
