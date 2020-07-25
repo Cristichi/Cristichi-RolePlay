@@ -79,7 +79,6 @@ public class StatsPlayer {
 	public static long getDateDiff(Date date1, Date date2, TimeUnit timeUnit) {
 	    long diffInMillies = date2.getTime() - date1.getTime();
 	    return diffInMillies;
-	    //return timeUnit.convert(diffInMillies,TimeUnit.MILLISECONDS);
 	}
 	
 	public static void saveAllPlayersStats(File file) {
@@ -137,14 +136,15 @@ public class StatsPlayer {
 							StringTokenizer lineST = new StringTokenizer(line, ":");
 							String dataName = lineST.nextToken().trim().toLowerCase();
 							String data = lineST.nextToken().trim();
-							switch (dataName) {
+							loopasswitch: switch (dataName) {
 							case "class name":
 								for (RoleClass rc : RoleClass.values()) {
 									if (rc.getName().equalsIgnoreCase(data)) {
 										stats = new Stats(rc);
+										break loopasswitch;
 									}
 								}
-								break;
+								throw new NullPointerException("Class \""+dataName+"\" not recognized (Maybe it was removed or name changed?)");
 							case "exp":
 							case "experience":
 								stats.setExp(Integer.parseInt(data));
