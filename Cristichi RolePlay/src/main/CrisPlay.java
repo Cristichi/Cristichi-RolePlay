@@ -22,11 +22,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import obj.ExpListener;
 import obj.Level;
+import obj.Levels;
 import obj.RoleClass;
 import obj.Stats;
 import obj.StatsListener;
 import obj.StatsPlayer;
-import util.SortedList;
 
 public class CrisPlay extends JavaPlugin implements Listener {
 	private PluginDescriptionFile desc = getDescription();
@@ -50,6 +50,7 @@ public class CrisPlay extends JavaPlugin implements Listener {
 
 			getServer().getPluginManager().registerEvents(new ExpListener(this), this);
 			getServer().getPluginManager().registerEvents(new StatsListener(this), this);
+//			getServer().getPluginManager().registerEvents(new SkillListener(this), this);
 			getServer().getPluginManager().registerEvents(this, this);
 			getLogger().info("Enabled");
 
@@ -133,7 +134,7 @@ public class CrisPlay extends JavaPlugin implements Listener {
 				}
 				if (rc != null) {
 					sender.sendMessage(new String[] { header + rc.getName() + ":", textColor + " " + rc.getInfo() });
-					SortedList<Level> lvls = rc.getLevels();
+					Levels lvls = rc.getLevels();
 					for (int i = 0; i < lvls.size(); i++) {
 						Level lvl = lvls.get(i);
 						sender.sendMessage(
@@ -145,6 +146,15 @@ public class CrisPlay extends JavaPlugin implements Listener {
 												+ textColor + "      Block: " + accentColor + lvl.getBlock() + ""
 												+ textColor + "      Dodge: " + accentColor + lvl.getBlock() });
 					}
+					Level lvl = lvls.getIncrease();
+					sender.sendMessage(
+							new String[] { textColor + "  Higher Levels " + accentColor + "↑" + textColor + ": ",
+									textColor + "   Required Exp: +" + accentColor + lvl.getRequiredExp() + ""
+											+ textColor + "   Strength: +" + accentColor + lvl.getStrength() + ""
+											+ textColor + "    Dexterity: +" + accentColor + lvl.getDexterity(),
+									textColor + "   Resistance: +" + accentColor + lvl.getResistance() + ""
+											+ textColor + "      Block: +" + accentColor + lvl.getBlock() + ""
+											+ textColor + "      Dodge: +" + accentColor + lvl.getBlock() });
 				} else {
 					sender.sendMessage(header + "You must specify which class if you don't have any.");
 				}

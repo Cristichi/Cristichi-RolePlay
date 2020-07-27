@@ -15,8 +15,10 @@ public enum RoleClass {
 			"You gain experience when you hit mobs or players using a bow or throwing snowballs, eggs, etc.", CrisPlay.mainColor + "[Archer %lvl]" + ChatColor.RESET),
 	FISHERMAN("Fisherman", "It's not the most interesting job, but you enjoy it.",
 			"You gain experience when you fish.", CrisPlay.mainColor + "[Fisherman %lvl]" + ChatColor.RESET),
-	RIDER("Rider", "Walking is for duumies.",
-			"You gain experience while moving on minecarts, boats, horses, etc.", CrisPlay.mainColor + "[Rider %lvl]" + ChatColor.RESET),
+	RIDER("Rider", "Walking is for duumies.", "You gain experience while moving on minecarts, boats, horses, etc.",
+			CrisPlay.mainColor + "[Rider %lvl]" + ChatColor.RESET),
+	DRAGON("Dragon", "Nothing like flying and breathing fire.", "You gain experience while flying with an elytra or setting mobs on fire with swords or fire arrows.",
+			ChatColor.GOLD + "[Dragon %lvl]" + ChatColor.RESET),
 	;
 	static {
 		BEGGAR.setLevels(new Level[] {
@@ -37,7 +39,6 @@ public enum RoleClass {
 				new Level(100, 0, 4, .1f, 0, .1f),
 				new Level(200, 0, 6, .1f, 0, .1f),
 		}, new Level(100, 0, 0, 0, 0, 0));
-		// strength, dexterity, resistance, block, dodge
 		FISHERMAN.setLevels(new Level[] {
 				new Level(0, 1, 1, 0, 0, 0f),
 				new Level(80, 2, 2, 0, 0, 0f),
@@ -48,6 +49,10 @@ public enum RoleClass {
 				new Level(80, 1, 2, 0, 0, .4f),
 				new Level(160, 2, 3, 0, 0, .5f),
 		}, new Level(100, 0, 0, 0, 0, 0));
+		// strength, dexterity, resistance, block, dodge
+		DRAGON.setLevels(new Level[] {
+				new Level(0, 0, 0, .1f, .1f, .3f),
+		}, new Level(100, .1f, .1f, .001f, .001f, 0));
 		
 	}
 

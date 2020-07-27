@@ -144,7 +144,7 @@ public class StatsPlayer {
 										break loopasswitch;
 									}
 								}
-								throw new NullPointerException("Class \""+dataName+"\" not recognized (Maybe it was removed or name changed?)");
+								throw new NullPointerException("Class \""+data+"\" not recognized (Maybe it was removed or name changed?)");
 							case "exp":
 							case "experience":
 								stats.setExp(Integer.parseInt(data));
