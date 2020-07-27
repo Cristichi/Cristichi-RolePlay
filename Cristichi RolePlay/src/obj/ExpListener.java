@@ -48,32 +48,38 @@ public class ExpListener implements Listener {
 		Player p = e.getPlayer();
 		Stats stats = StatsPlayer.getPlayerStats(p);
 		if (stats!=null) {
-			if (stats.getClassName().equals(RoleClass.BEGGAR.getName()) && Math.random() < 0.001) {
-				p.sendMessage(plugin.header + "You gained 1 exp for walking!");
-				if (stats.changeExp(1)) {
-					p.sendMessage(plugin.header + "You are now " + stats.getClassName() + " " + stats.getNumLevel() + "!");
-				}
-				StatsPlayer.putPlayerStats(p, stats);
-				p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
-			} else if (stats.getClassName().equals(RoleClass.RIDER.getName()) && p.isInsideVehicle()) {
-				double prob = 0.02 * e.getFrom().distance(e.getTo());
-				if (Math.random() < prob) {
-					p.sendMessage(plugin.header + "You gained 1 exp for riding " + p.getVehicle().getName() + "!");
+			if (stats.getClassName().equals(RoleClass.BEGGAR.getName())) {
+				if (Math.random() < 0.001) {
+					p.sendMessage(plugin.header + "You gained 1 exp for walking!");
 					if (stats.changeExp(1)) {
 						p.sendMessage(plugin.header + "You are now " + stats.getClassName() + " " + stats.getNumLevel() + "!");
 					}
 					StatsPlayer.putPlayerStats(p, stats);
 					p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
 				}
-			} else if (stats.getClassName().equals(RoleClass.DRAGON.getName()) && p.isGliding()) {
-				double prob = 0.003 * e.getFrom().distance(e.getTo());
-				if (Math.random() < prob) {
-					p.sendMessage(plugin.header + "You gained 1 exp for flying!");
-					if (stats.changeExp(1)) {
-						p.sendMessage(plugin.header + "You are now " + stats.getClassName() + " " + stats.getNumLevel() + "!");
+			} else if (stats.getClassName().equals(RoleClass.RIDER.getName())) {
+				if (p.isInsideVehicle()) {
+					double prob = 0.02 * e.getFrom().distance(e.getTo());
+					if (Math.random() < prob) {
+						p.sendMessage(plugin.header + "You gained 1 exp for riding " + p.getVehicle().getName() + "!");
+						if (stats.changeExp(1)) {
+							p.sendMessage(plugin.header + "You are now " + stats.getClassName() + " " + stats.getNumLevel() + "!");
+						}
+						StatsPlayer.putPlayerStats(p, stats);
+						p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
 					}
-					StatsPlayer.putPlayerStats(p, stats);
-					p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
+				}
+			} else if (stats.getClassName().equals(RoleClass.DRAGON.getName())) {
+				if (p.isGliding()) {
+					double prob = 0.003 * e.getFrom().distance(e.getTo());
+					if (Math.random() < prob) {
+						p.sendMessage(plugin.header + "You gained 1 exp for flying!");
+						if (stats.changeExp(1)) {
+							p.sendMessage(plugin.header + "You are now " + stats.getClassName() + " " + stats.getNumLevel() + "!");
+						}
+						StatsPlayer.putPlayerStats(p, stats);
+						p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 0);
+					}
 				}
 			}
 		}
