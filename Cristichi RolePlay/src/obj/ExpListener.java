@@ -168,7 +168,7 @@ public class ExpListener implements Listener {
 							}
 						} else if (stats.getClassName().equals(RoleClass.DRAGON.getName())) {
 							if (offender.getFireTicks()>0) {
-								double prob = 0.05;
+								double prob = 0.1;
 								ItemStack helmet =p.getInventory().getHelmet(); 
 								if (helmet != null && helmet.getType().equals(Material.DRAGON_HEAD)) {
 									prob+=.1;
