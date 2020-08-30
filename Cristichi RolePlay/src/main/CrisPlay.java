@@ -20,20 +20,20 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import listeners.StatsListener;
+import listeners.StatsPlayer;
 import obj.ExpListener;
 import obj.Level;
 import obj.Levels;
 import obj.RoleClass;
 import obj.Stats;
-import obj.StatsListener;
-import obj.StatsPlayer;
 
 public class CrisPlay extends JavaPlugin implements Listener {
 	private PluginDescriptionFile desc = getDescription();
 
-	public static final ChatColor mainColor = ChatColor.LIGHT_PURPLE;
-	public static final ChatColor textColor = ChatColor.AQUA;
-	public static final ChatColor accentColor = ChatColor.GOLD;
+	public static final ChatColor mainColor = ChatColor.GOLD;
+	public static final ChatColor textColor = ChatColor.WHITE;
+	public static final ChatColor accentColor = ChatColor.AQUA;
 	public static final ChatColor errorColor = ChatColor.DARK_RED;
 	public final String header = mainColor + "[" + desc.getName() + "] " + textColor;
 

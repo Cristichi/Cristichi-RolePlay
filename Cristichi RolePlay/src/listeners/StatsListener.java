@@ -1,4 +1,4 @@
-package obj;
+package listeners;
 
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
@@ -12,6 +12,9 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
+
+import obj.Level;
+import obj.Stats;
 
 public class StatsListener implements Listener {
 	private static final String META_ARROW_DAMAGE = "crisrp_arrow_damage";

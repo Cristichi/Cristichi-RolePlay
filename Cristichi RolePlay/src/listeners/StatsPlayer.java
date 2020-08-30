@@ -1,4 +1,4 @@
-package obj;
+package listeners;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -21,6 +21,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import main.CrisPlay;
+import obj.RoleClass;
+import obj.Stats;
 
 public class StatsPlayer {
 	private static HashMap<UUID, Stats> players = new HashMap<>();
