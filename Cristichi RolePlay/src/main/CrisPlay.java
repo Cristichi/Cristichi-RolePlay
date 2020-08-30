@@ -1,7 +1,11 @@
 package main;
 
+import java.io.BufferedReader;
 import java.io.File;
-import java.nio.file.FileSystemException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.InetSocketAddress;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,6 +24,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.sun.net.httpserver.HttpServer;
+
 import listeners.StatsListener;
 import listeners.StatsPlayer;
 import obj.ExpListener;
@@ -27,6 +33,7 @@ import obj.Level;
 import obj.Levels;
 import obj.RoleClass;
 import obj.Stats;
+import web.CrisRolePlayHttpHandler;
 
 public class CrisPlay extends JavaPlugin implements Listener {
 	private PluginDescriptionFile desc = getDescription();
@@ -38,10 +45,13 @@ public class CrisPlay extends JavaPlugin implements Listener {
 	public final String header = mainColor + "[" + desc.getName() + "] " + textColor;
 
 	private final String msgNoPermission = header + errorColor + "You don't have permission to use that.";
-	
+
 	public static final String PERMISSION_USE = "crisrp.use";
 
 	private static final File PLAYER_STATS_FILE = new File("plugins/Cris RolePlay/Player Stats.yml");
+
+//	private WebServer web;
+	private HttpServer serverWeb;
 
 	@Override
 	public void onEnable() {
@@ -50,26 +60,45 @@ public class CrisPlay extends JavaPlugin implements Listener {
 
 			getServer().getPluginManager().registerEvents(new ExpListener(this), this);
 			getServer().getPluginManager().registerEvents(new StatsListener(this), this);
-//			getServer().getPluginManager().registerEvents(new SkillListener(this), this);
 			getServer().getPluginManager().registerEvents(this, this);
 			getLogger().info("Enabled");
 
 			StatsPlayer.saveAllPlayersStats(PLAYER_STATS_FILE);
-		} catch (FileSystemException e) {
+
+			//Server
+			InputStream is = CrisRolePlayHttpHandler.class.getResourceAsStream("web.html");
+			String newLine = System.getProperty("line.separator");
+			BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+			StringBuilder result = new StringBuilder();
+			boolean flag = false;
+			for (String line; (line = reader.readLine()) != null;) {
+				result.append(flag ? newLine : "").append(line);
+				flag = true;
+			}
+			reader.close();
+			String htmlString = result.toString();
+			
+			serverWeb = HttpServer.create(new InetSocketAddress(8888), 0);
+			serverWeb.createContext("/", new CrisRolePlayHttpHandler(htmlString));
+			serverWeb.setExecutor(null);
+			serverWeb.start();
+		} catch (IOException e) {
 			getServer().getPluginManager().disablePlugin(this);
-			throw new RuntimeException(e);
+			e.printStackTrace();
 		}
 	}
 
 	@Override
 	public void onDisable() {
 		StatsPlayer.saveAllPlayersStats(PLAYER_STATS_FILE);
+		if (serverWeb != null)
+			serverWeb.stop(0);
 		getLogger().info("Disabled");
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	private void onLogin(PlayerJoinEvent e) {
-		if (StatsPlayer.playerHasStats(e.getPlayer())){
+		if (StatsPlayer.playerHasStats(e.getPlayer())) {
 			e.getPlayer().performCommand("rp stats");
 		} else {
 			e.getPlayer().sendMessage(header
@@ -79,7 +108,7 @@ public class CrisPlay extends JavaPlugin implements Listener {
 
 	@EventHandler
 	private void onChat(AsyncPlayerChatEvent e) {
-		if (StatsPlayer.playerHasStats(e.getPlayer())){
+		if (StatsPlayer.playerHasStats(e.getPlayer())) {
 			Stats stats = StatsPlayer.getPlayerStats(e.getPlayer());
 			e.setFormat(stats.getPrefix() + "%s" + stats.getSuffix() + ": %s");
 		}
@@ -152,9 +181,9 @@ public class CrisPlay extends JavaPlugin implements Listener {
 									textColor + "   Required Exp: +" + accentColor + lvl.getRequiredExp() + ""
 											+ textColor + "   Strength: +" + accentColor + lvl.getStrength() + ""
 											+ textColor + "    Dexterity: +" + accentColor + lvl.getDexterity(),
-									textColor + "   Resistance: +" + accentColor + lvl.getResistance() + ""
-											+ textColor + "      Block: +" + accentColor + lvl.getBlock() + ""
-											+ textColor + "      Dodge: +" + accentColor + lvl.getBlock() });
+									textColor + "   Resistance: +" + accentColor + lvl.getResistance() + "" + textColor
+											+ "      Block: +" + accentColor + lvl.getBlock() + "" + textColor
+											+ "      Dodge: +" + accentColor + lvl.getBlock() });
 				} else {
 					sender.sendMessage(header + "You must specify which class if you don't have any.");
 				}
