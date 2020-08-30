@@ -36,7 +36,6 @@ public class StatsListener implements Listener {
 			}
 		}
 		
-
 		Entity defender = e.getEntity();
 		if (defender instanceof Player) {
 			Player p = (Player) defender;
