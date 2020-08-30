@@ -35,6 +35,7 @@ public class StatsListener implements Listener {
 				e.setDamage(e.getDamage() + stats.getCurrentLevel().getStrength());
 			}
 		}
+		
 
 		Entity defender = e.getEntity();
 		if (defender instanceof Player) {
