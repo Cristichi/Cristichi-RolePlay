@@ -1,11 +1,7 @@
 package main;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.InetSocketAddress;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,7 +29,6 @@ import obj.Level;
 import obj.Levels;
 import obj.RoleClass;
 import obj.Stats;
-import web.CrisRolePlayHttpHandler;
 
 public class CrisPlay extends JavaPlugin implements Listener {
 	private PluginDescriptionFile desc = getDescription();
@@ -50,9 +45,6 @@ public class CrisPlay extends JavaPlugin implements Listener {
 
 	private static final File PLAYER_STATS_FILE = new File("plugins/Cris RolePlay/Player Stats.yml");
 
-//	private WebServer web;
-	private HttpServer serverWeb;
-
 	@Override
 	public void onEnable() {
 		try {
@@ -64,24 +56,6 @@ public class CrisPlay extends JavaPlugin implements Listener {
 			getLogger().info("Enabled");
 
 			StatsPlayer.saveAllPlayersStats(PLAYER_STATS_FILE);
-
-			//Server
-			InputStream is = CrisRolePlayHttpHandler.class.getResourceAsStream("web.html");
-			String newLine = System.getProperty("line.separator");
-			BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-			StringBuilder result = new StringBuilder();
-			boolean flag = false;
-			for (String line; (line = reader.readLine()) != null;) {
-				result.append(flag ? newLine : "").append(line);
-				flag = true;
-			}
-			reader.close();
-			String htmlString = result.toString();
-			
-			serverWeb = HttpServer.create(new InetSocketAddress(8888), 0);
-			serverWeb.createContext("/", new CrisRolePlayHttpHandler(htmlString));
-			serverWeb.setExecutor(null);
-			serverWeb.start();
 		} catch (IOException e) {
 			getServer().getPluginManager().disablePlugin(this);
 			e.printStackTrace();
@@ -91,8 +65,6 @@ public class CrisPlay extends JavaPlugin implements Listener {
 	@Override
 	public void onDisable() {
 		StatsPlayer.saveAllPlayersStats(PLAYER_STATS_FILE);
-		if (serverWeb != null)
-			serverWeb.stop(0);
 		getLogger().info("Disabled");
 	}
 
