@@ -2,6 +2,7 @@ name: CristichiRoleStats
 main: main.CrisPlay
 version: 1.15
 api-version: 1.13
+depend: [CrisWebConfiguration]
 commands:
   roleplay:
     description: Controls this plugin.

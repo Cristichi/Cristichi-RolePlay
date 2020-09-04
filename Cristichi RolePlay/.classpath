@@ -11,5 +11,6 @@
 			<attribute name="javadoc_location" value="jar:file:/C:/Users/crist/Downloads/craftbukkit-master@93cfb195ca8.zip!/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="C:/Todo/MC Servers/Pruebas 1.16/plugins/CrisWebConfiguration.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -11,6 +11,7 @@ import java.util.Locale;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -20,8 +21,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.sun.net.httpserver.HttpServer;
-
+import configuration.Configuration;
+import exc.ConfigurationException;
 import listeners.StatsListener;
 import listeners.StatsPlayer;
 import obj.ExpListener;
@@ -39,11 +40,19 @@ public class CrisPlay extends JavaPlugin implements Listener {
 	public static final ChatColor errorColor = ChatColor.DARK_RED;
 	public final String header = mainColor + "[" + desc.getName() + "] " + textColor;
 
+	private Configuration config;
+
 	private final String msgNoPermission = header + errorColor + "You don't have permission to use that.";
 
 	public static final String PERMISSION_USE = "crisrp.use";
 
-	private static final File PLAYER_STATS_FILE = new File("plugins/Cris RolePlay/Player Stats.yml");
+	private final File PLAYER_STATS_FILE = new File("plugins/" + getName() + "/Player Stats.yml");
+
+	private static final String STRG_START_ACTIVATED = "start-activated";
+	private boolean startActivated = true;
+
+	private static final String STRG_MULTIPLY = "multiply-exp";
+	private int multiplyExp = 1;
 
 	@Override
 	public void onEnable() {
@@ -56,15 +65,53 @@ public class CrisPlay extends JavaPlugin implements Listener {
 			getLogger().info("Enabled");
 
 			StatsPlayer.saveAllPlayersStats(PLAYER_STATS_FILE);
-		} catch (IOException e) {
+
+			config = new Configuration(this, "Cristichi RolePlay") {
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public void onUpdatedByWeb() {
+					loadConfiguration();
+				}
+
+			};
+			loadConfiguration();
+			saveConfiguration();
+			config.startServer(0);
+		} catch (IOException | ConfigurationException e) {
 			getServer().getPluginManager().disablePlugin(this);
+			e.printStackTrace();
+		}
+	}
+
+	private void loadConfiguration() {
+		config.reloadConfigFromFile();
+
+		startActivated = config.getBoolean(STRG_START_ACTIVATED, startActivated);
+		config.setInfo(STRG_START_ACTIVATED,
+				"Sets if plugin is activated by default. If false, players will need to use /tc toggle to activate it for themself.");
+		config.reloadConfigFromFile();
+
+		multiplyExp = config.getInt(STRG_MULTIPLY, multiplyExp);
+		config.setInfo(STRG_MULTIPLY, "Changes all exp received.");
+	}
+
+	private void saveConfiguration() {
+		try {
+			config.setValue(STRG_START_ACTIVATED, startActivated);
+			config.setValue(STRG_MULTIPLY, multiplyExp);
+			config.saveConfig();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	@Override
 	public void onDisable() {
+		saveConfiguration();
 		StatsPlayer.saveAllPlayersStats(PLAYER_STATS_FILE);
+		if (config != null)
+			config.stopServer();
 		getLogger().info("Disabled");
 	}
 
@@ -106,6 +153,13 @@ public class CrisPlay extends JavaPlugin implements Listener {
 					+ "Shows you information about the different levels and how to gain experience if that class.");
 			sender.sendMessage(accentColor + "  /" + label + " choose (Class Name)" + textColor + ": "
 					+ "Changes your roleplay class, but resets your experience.");
+			break;
+		case "configweb":
+			if (sender instanceof ConsoleCommandSender) {
+				sender.sendMessage(header+errorColor+"Copy this link and paste it into any browser:    "+config.getWebLink());
+			} else {
+				sender.sendMessage(header+errorColor+"Only the owner can access the configuration website.");
+			}
 			break;
 		case "classes":
 			sender.sendMessage(header + "Classes:");
@@ -298,4 +352,5 @@ public class CrisPlay extends JavaPlugin implements Listener {
 		}
 		return sol;
 	}
+
 }
