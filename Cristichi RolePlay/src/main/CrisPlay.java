@@ -153,6 +153,10 @@ public class CrisPlay extends JavaPlugin implements Listener {
 					+ "Shows you information about the different levels and how to gain experience if that class.");
 			sender.sendMessage(accentColor + "  /" + label + " choose (Class Name)" + textColor + ": "
 					+ "Changes your roleplay class, but resets your experience.");
+			if (sender instanceof ConsoleCommandSender) {
+				sender.sendMessage(accentColor + "  /" + label + " configweb" + textColor + ": "
+						+ "Shows you the link to the configuration website, if it's currently working.");
+			}
 			break;
 		case "configweb":
 			if (sender instanceof ConsoleCommandSender) {
@@ -332,6 +336,9 @@ public class CrisPlay extends JavaPlugin implements Listener {
 			sol.add("classes");
 			sol.add("choose");
 			sol.add("stats");
+			if (sender instanceof ConsoleCommandSender) {
+				sol.add("configweb");
+			}
 			break;
 
 		case 2:
