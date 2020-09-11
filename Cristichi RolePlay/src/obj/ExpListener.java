@@ -256,7 +256,6 @@ public class ExpListener implements Listener {
 		if (e.getState().equals(State.CAUGHT_FISH)) {
 			Player p = e.getPlayer();
 			Stats stats = StatsPlayer.getPlayerStats(e.getPlayer());
-			p.sendMessage("Estado: " + e.getState());
 			if (stats != null && stats.getClassName().equals(RoleClass.FISHERMAN.getName()) && Math.random() < 0.3) {
 				p.sendMessage(plugin.header + "You gained 1 exp for fishing " + e.getCaught().getName() + "!");
 				if (stats.changeExp(1)) {
