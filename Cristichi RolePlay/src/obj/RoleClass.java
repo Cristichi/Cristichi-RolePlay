@@ -22,6 +22,8 @@ public enum RoleClass {
 			"You gain experience while flying with an elytra or setting mobs on fire with swords or fire arrows.",
 			ChatColor.GOLD + "[Dragon %lvl]" + ChatColor.RESET),;
 	static {
+		// strength, dexterity, resistance, block, dodge
+		
 		BEGGAR.setLevels(new Level[] {
 				new Level(0, 0, 0, 0, 0, 0),
 				new Level(20, 0, 0, 0, 0, 0),
@@ -29,8 +31,8 @@ public enum RoleClass {
 				}, new Level(20, 1, 1, .01f, .01f, .01f));
 		
 		WARRIOR.setLevels(new Level[] {
-				new Level(0, 2, 0, 0, .05f, 0),
-				new Level(20, 4, 0, .5f, .05f, 0),
+				new Level(0, 2, -1, 0, .05f, 0),
+				new Level(20, 2.1f, -.5f, .5f, .05f, 0),
 				}, new Level(20, .5f, 0, 0, 0, 0));
 		
 		TANK.setLevels(new Level[] {
@@ -45,20 +47,15 @@ public enum RoleClass {
 		
 		FISHERMAN.setLevels(new Level[] { 
 				new Level(0, 1, 1, 0, 0, 0f),
-				new Level(80, 2, 2, 0, 0, 0f),
-				new Level(160, 3, 3, 0, 0, 0f),
 				}, new Level(100, 0, 0, 0, 0, 0));
 		
 		RIDER.setLevels(new Level[] {
 				new Level(0, 0, 1, 0, 0, .3f),
-				new Level(80, 1, 2, 0, 0, .4f),
-				new Level(160, 2, 3, 0, 0, .5f),
-				}, new Level(100, 0, 0, 0, 0, 0));
+				}, new Level(100, .05f, .05f, 0, 0, .02f));
 		
-		// strength, dexterity, resistance, block, dodge
 		DRAGON.setLevels(new Level[] {
 				new Level(0, 0, 0, .1f, .1f, .3f),
-				}, new Level(100, .1f, .1f, .001f, .001f, 0));
+				}, new Level(30, .1f, .1f, .002f, .002f, .001f));
 	}
 
 	private Levels levels;

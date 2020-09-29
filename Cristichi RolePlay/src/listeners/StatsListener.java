@@ -15,6 +15,7 @@ import org.bukkit.plugin.Plugin;
 
 import obj.Level;
 import obj.Stats;
+import obj.StatsPlayer;
 
 public class StatsListener implements Listener {
 	private static final String META_ARROW_DAMAGE = "crisrp_arrow_damage";

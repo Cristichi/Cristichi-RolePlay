@@ -23,13 +23,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import configuration.Configuration;
 import exc.ConfigurationException;
+import listeners.ExpListener;
 import listeners.StatsListener;
-import listeners.StatsPlayer;
-import obj.ExpListener;
 import obj.Level;
 import obj.Levels;
 import obj.RoleClass;
 import obj.Stats;
+import obj.StatsPlayer;
 
 public class CrisPlay extends JavaPlugin implements Listener {
 	private PluginDescriptionFile desc = getDescription();
