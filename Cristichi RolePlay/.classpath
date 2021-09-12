@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre-x64-Minecraft">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="C:/Todo/MC Servers/craftbukkit-last.jar" sourcepath="C:/Users/crist/Downloads/craftbukkit-master@93cfb195ca8.zip">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/C:/Users/crist/Downloads/craftbukkit-master@93cfb195ca8.zip!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="C:/Todo/MC Servers/Pruebas 1.16/plugins/CrisWebConfiguration.jar"/>
+	<classpathentry kind="lib" path="C:/Todo/MC Plugins/Cristichi Web Configuration.jar"/>
+	<classpathentry kind="lib" path="C:/Todo/MC Plugins/spigot-1.17.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

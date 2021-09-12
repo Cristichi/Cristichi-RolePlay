@@ -116,7 +116,7 @@ public class Stats {
 		}
 		Level lvl = levels.getLevel(exp);
 		lastCalcedLevel = new Level(lvl);
-		lastCalcedExp = new Integer(exp);
+		lastCalcedExp = exp;
 		return lvl;
 	}
 

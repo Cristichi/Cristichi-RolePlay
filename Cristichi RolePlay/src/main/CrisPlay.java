@@ -129,7 +129,7 @@ public class CrisPlay extends JavaPlugin implements Listener {
 	private void onChat(AsyncPlayerChatEvent e) {
 		if (StatsPlayer.playerHasStats(e.getPlayer())) {
 			Stats stats = StatsPlayer.getPlayerStats(e.getPlayer());
-			e.setFormat(stats.getPrefix() + "%s" + stats.getSuffix() + ": %s");
+			e.setFormat(stats.getPrefix() + " %s" + stats.getSuffix() + ": %s");
 		}
 	}
 
